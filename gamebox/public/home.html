@@ -22,19 +22,41 @@
     --text-main: #e2e8f0;
     --text-sub: #94a3b8;
     --success: #10b981;
+    --purple: #8b5cf6;
 }
 
 body {
-    background: linear-gradient(135deg, #0a0e17 0%, #0f172a 100%);
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+        linear-gradient(135deg, #0a0e17 0%, #0f172a 100%);
+    background-attachment: fixed;
     color: var(--text-main);
     min-height: 100vh;
     line-height: 1.6;
+    position: relative;
+}
+
+/* 科技网格背景 */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
 }
 
 /* 顶部导航栏 */
 .navbar {
     height: 60px;
-    background: rgba(17, 24, 39, 0.8);
+    background: rgba(17, 24, 39, 0.85);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
     position: sticky;
@@ -50,6 +72,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
+    z-index: 1;
 }
 .nav-logo {
     font-size: 18px;
@@ -101,6 +125,8 @@ body {
     grid-template-columns: 240px 1fr;
     gap: 24px;
     align-items: start;
+    position: relative;
+    z-index: 1;
 }
 
 /* 左侧侧边栏 */
@@ -112,6 +138,9 @@ body {
     position: sticky;
     top: 84px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 .menu-item {
     padding: 12px 24px;
@@ -133,7 +162,30 @@ body {
     color: var(--primary);
     border-left-color: var(--primary);
     font-weight: 500;
-    box-shadow: inset 0 0 20px rgba(14, 165, 233, 0.05);
+}
+
+/* 侧边栏数据统计 */
+.sidebar-stats {
+    margin: 12px 16px 0;
+    padding: 14px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--text-sub);
+}
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+.stat-row:last-child {
+    margin-bottom: 0;
+}
+.stat-num {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 14px;
 }
 
 /* 右侧主内容 */
@@ -159,10 +211,10 @@ body {
     padding: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     transition: all 0.3s;
+    position: relative;
 }
 .card:hover {
     border-color: rgba(14, 165, 233, 0.4);
-    box-shadow: 0 6px 24px rgba(14, 165, 233, 0.1);
 }
 .card-title {
     font-size: 16px;
@@ -170,15 +222,34 @@ body {
     margin-bottom: 16px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
     color: var(--text-main);
 }
-.card-title::before {
+.card-title-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.card-title-left::before {
     content: "";
     width: 3px;
     height: 16px;
     background: linear-gradient(180deg, #0ea5e9, #8b5cf6);
     border-radius: 2px;
+}
+
+/* 公告栏 */
+.notice-bar {
+    padding: 12px 16px;
+    background: linear-gradient(90deg, rgba(14, 165, 233, 0.15), rgba(139, 92, 246, 0.15));
+    border: 1px solid rgba(14, 165, 233, 0.3);
+    border-radius: 8px;
+    font-size: 13px;
+    color: #7dd3fc;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 /* 输入框和按钮 */
@@ -218,8 +289,38 @@ textarea {
     transform: translateY(-1px);
     box-shadow: 0 6px 18px rgba(14, 165, 233, 0.35);
 }
-.btn:active {
-    transform: translateY(0);
+.btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-sub);
+    box-shadow: none;
+}
+.btn-ghost:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: none;
+    box-shadow: none;
+}
+
+/* 排序按钮组 */
+.sort-group {
+    display: flex;
+    gap: 8px;
+}
+.sort-btn {
+    padding: 5px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-sub);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.sort-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
 }
 
 /* 帖子列表 */
@@ -261,13 +362,28 @@ textarea {
     color: var(--text-main);
     white-space: pre-wrap;
     word-break: break-word;
+    margin-bottom: 10px;
 }
 .post-footer {
-    margin-top: 10px;
-    font-size: 12px;
-    color: var(--text-sub);
     display: flex;
     gap: 16px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-color);
+}
+.post-action {
+    font-size: 12px;
+    color: var(--text-sub);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s;
+}
+.post-action:hover {
+    color: var(--primary);
+}
+.post-action.liked {
+    color: var(--primary);
 }
 
 /* 游戏网格 */
@@ -296,6 +412,16 @@ textarea {
     align-items: center;
     justify-content: center;
     font-size: 40px;
+    position: relative;
+}
+.game-cover::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(transparent, rgba(0,0,0,0.3));
 }
 .game-info {
     padding: 12px;
@@ -308,9 +434,14 @@ textarea {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.game-author {
+.game-meta {
     font-size: 12px;
     color: var(--text-sub);
+    display: flex;
+    justify-content: space-between;
+}
+.play-count {
+    color: var(--success);
 }
 
 /* 搜索框 */
@@ -340,20 +471,32 @@ textarea {
     border: 1px dashed var(--border-color);
     border-radius: 10px;
     background: rgba(15, 23, 42, 0.5);
+    grid-column: 1/-1;
 }
 
-/* 提示条 */
-.tip-bar {
-    padding: 10px 14px;
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.3);
+/* 上传表单 */
+.upload-form {
+    display: none;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: #0a0e17;
     border-radius: 8px;
-    font-size: 13px;
-    color: var(--success);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    border: 1px solid var(--border-color);
+}
+.upload-form.show {
+    display: block;
+}
+
+/* 加载骨架 */
+.skeleton {
+    background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+    background-size: 200% 100%;
+    animation: skeleton 1.5s infinite;
+    border-radius: 6px;
+}
+@keyframes skeleton {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }
 
 /* 响应式 */
@@ -363,7 +506,7 @@ textarea {
     }
     .sidebar {
         position: static;
-        display: flex;
+        flex-direction: row;
         overflow-x: auto;
         padding: 8px;
     }
@@ -376,6 +519,9 @@ textarea {
     .menu-item.active {
         border-left: none;
         border-bottom-color: var(--primary);
+    }
+    .sidebar-stats {
+        display: none;
     }
     .game-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -410,6 +556,22 @@ textarea {
         <div class="menu-item" onclick="switchPanel('library')">
             <span>📚</span> 游戏库
         </div>
+        
+        <!-- 数据统计面板 -->
+        <div class="sidebar-stats">
+            <div class="stat-row">
+                <span>🎮 游戏总数</span>
+                <span class="stat-num" id="statGames">0</span>
+            </div>
+            <div class="stat-row">
+                <span>💬 帖子总数</span>
+                <span class="stat-num" id="statPosts">0</span>
+            </div>
+            <div class="stat-row">
+                <span>👤 当前用户</span>
+                <span class="stat-num" id="statUsers">1</span>
+            </div>
+        </div>
     </div>
 
     <!-- 右侧内容 -->
@@ -418,7 +580,13 @@ textarea {
         <!-- 1. 社区帖子页面 -->
         <div class="panel active" id="postPanel">
             <div class="card">
-                <div class="card-title">发布新帖子</div>
+                <div class="notice-bar">
+                    <span>📢</span>
+                    欢迎来到游戏社区！上传HTML小游戏、分享心得，和大家一起玩～
+                </div>
+                <div class="card-title">
+                    <div class="card-title-left">发布新帖子</div>
+                </div>
                 <textarea id="postContent" placeholder="分享你的游戏心得、问题讨论或新鲜事..."></textarea>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <span style="font-size:12px; color:var(--text-sub);"><span id="charCount">0</span> 字</span>
@@ -427,7 +595,9 @@ textarea {
             </div>
 
             <div class="card">
-                <div class="card-title">全部帖子</div>
+                <div class="card-title">
+                    <div class="card-title-left">全部帖子</div>
+                </div>
                 <div id="postList"></div>
             </div>
         </div>
@@ -435,10 +605,9 @@ textarea {
         <!-- 2. 游戏广场页面 -->
         <div class="panel" id="squarePanel">
             <div class="card">
-                <div class="card-title">🔥 最新上架</div>
-                <div class="tip-bar">
-                    <span>☁️</span>
-                    所有游戏均已云端同步，全部玩家可见
+                <div class="card-title">
+                    <div class="card-title-left">🔥 最新上架</div>
+                    <span style="font-size:12px;color:var(--text-sub);font-weight:normal;">云端同步 · 全员可见</span>
                 </div>
                 <div id="squareGameList" class="game-grid"></div>
             </div>
@@ -447,22 +616,30 @@ textarea {
         <!-- 3. 游戏库页面 -->
         <div class="panel" id="libraryPanel">
             <div class="card">
-                <div class="card-title">📚 全部游戏库</div>
+                <div class="card-title">
+                    <div class="card-title-left">📚 全部游戏库</div>
+                    <div class="sort-group">
+                        <button class="sort-btn active" onclick="sortGames('new')">最新发布</button>
+                        <button class="sort-btn" onclick="sortGames('hot')">最多游玩</button>
+                    </div>
+                </div>
+                
                 <div class="search-box">
                     <span class="search-icon">🔍</span>
                     <input id="gameSearch" placeholder="搜索游戏名称或作者..." oninput="searchGames()">
                 </div>
+
                 <div style="margin-bottom:16px;">
-                    <button class="btn" onclick="showUploadForm()">⬆️ 上传新游戏</button>
+                    <button class="btn" onclick="toggleUploadForm()">⬆️ 上传新游戏</button>
                 </div>
                 
                 <!-- 上传表单 -->
-                <div id="uploadForm" style="display:none; margin-bottom:20px; padding:16px; background:#0a0e17; border-radius:8px; border:1px solid var(--border-color);">
+                <div class="upload-form" id="uploadForm">
                     <div style="font-weight:500; margin-bottom:10px;">上传HTML游戏</div>
                     <input id="gameName" placeholder="游戏名称">
                     <textarea id="gameCode" rows="4" placeholder="粘贴完整HTML游戏代码"></textarea>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:12px; color:var(--text-sub);">上传后自动同步到云端，所有玩家可见</span>
+                        <span style="font-size:12px; color:var(--text-sub);">上传后自动同步云端，所有玩家可见</span>
                         <button class="btn" onclick="uploadGame()">确认上传</button>
                     </div>
                 </div>
@@ -482,22 +659,19 @@ if(!username) window.location.href = "/index.html";
 document.getElementById("userName").textContent = username;
 document.getElementById("userAvatar").textContent = username.charAt(0).toUpperCase();
 
-// 全局游戏数据缓存
+// 全局数据
 let allGames = [];
+let allPosts = [];
+let currentSort = "new";
 
 // 切换面板
 function switchPanel(name) {
-    // 隐藏所有面板
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    // 取消所有菜单高亮
     document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
     
-    // 显示对应面板
     document.getElementById(name + 'Panel').classList.add('active');
-    // 高亮对应菜单
     event.currentTarget.classList.add('active');
 
-    // 切换时刷新数据
     if(name === 'post') loadPosts();
     if(name === 'square' || name === 'library') loadAllGames();
 }
@@ -507,20 +681,27 @@ document.getElementById("postContent").addEventListener("input", function(){
     document.getElementById("charCount").textContent = this.value.length;
 });
 
+// 更新侧边栏统计
+function updateStats() {
+    document.getElementById("statGames").textContent = allGames.length;
+    document.getElementById("statPosts").textContent = allPosts.length;
+}
+
 // 加载帖子
 async function loadPosts() {
     try {
         const res = await fetch("/api/posts");
-        const list = await res.json();
+        allPosts = await res.json();
         const div = document.getElementById("postList");
         
-        if(list.length === 0) {
+        if(allPosts.length === 0) {
             div.innerHTML = '<div class="empty">还没有帖子，快来发布第一条吧～</div>';
+            updateStats();
             return;
         }
 
         div.innerHTML = "";
-        list.forEach(p => {
+        allPosts.forEach((p, idx) => {
             const item = document.createElement("div");
             item.className = "post-item";
             item.innerHTML = `
@@ -532,12 +713,29 @@ async function loadPosts() {
                     </div>
                 </div>
                 <div class="post-content">${escapeHtml(p.content || "")}</div>
+                <div class="post-footer">
+                    <div class="post-action" onclick="likePost(${idx}, this)">
+                        <span>👍</span> <span class="like-num">0</span> 点赞
+                    </div>
+                    <div class="post-action">
+                        <span>💬</span> 回复
+                    </div>
+                </div>
             `;
             div.appendChild(item);
         });
+        updateStats();
     } catch(e) {
         document.getElementById("postList").innerHTML = '<div class="empty">帖子加载失败</div>';
     }
+}
+
+// 点赞
+function likePost(idx, el) {
+    if(el.classList.contains('liked')) return;
+    el.classList.add('liked');
+    const num = el.querySelector('.like-num');
+    num.textContent = Number(num.textContent) + 1;
 }
 
 // 发帖
@@ -563,16 +761,17 @@ async function sendPost() {
     }
 }
 
-// 加载全部游戏（云端同步）
+// 加载全部游戏
 async function loadAllGames() {
     try {
         const res = await fetch("/api/games");
         allGames = await res.json();
         
-        // 渲染广场（最新6个）
         renderGameList("squareGameList", allGames.slice(0, 6));
-        // 渲染游戏库（全部）
-        renderGameList("libraryGameList", allGames);
+        renderGameList("libraryGameList", 
+            currentSort === "new" ? allGames : [...allGames].sort((a,b) => (b.playCount||0) - (a.playCount||0))
+        );
+        updateStats();
     } catch(e) {
         console.error("游戏加载失败", e);
     }
@@ -582,20 +781,24 @@ async function loadAllGames() {
 function renderGameList(elementId, list) {
     const div = document.getElementById(elementId);
     if(list.length === 0) {
-        div.innerHTML = '<div class="empty" style="grid-column:1/-1;">暂无游戏，快去上传第一个吧</div>';
+        div.innerHTML = '<div class="empty">暂无游戏，快去上传第一个吧</div>';
         return;
     }
 
     div.innerHTML = "";
     list.forEach((g, idx) => {
+        const realIndex = allGames.indexOf(g);
         const card = document.createElement("div");
         card.className = "game-card";
-        card.onclick = () => playGame(idx);
+        card.onclick = () => playGame(realIndex);
         card.innerHTML = `
             <div class="game-cover">🎮</div>
             <div class="game-info">
                 <div class="game-name">${escapeHtml(g.name || "未命名游戏")}</div>
-                <div class="game-author">作者：${escapeHtml(g.user || "匿名")}</div>
+                <div class="game-meta">
+                    <span>作者：${escapeHtml(g.user || "匿名")}</span>
+                    <span class="play-count">▶ ${g.playCount || 0} 次</span>
+                </div>
             </div>
         `;
         div.appendChild(card);
@@ -606,7 +809,7 @@ function renderGameList(elementId, list) {
 function searchGames() {
     const keyword = document.getElementById("gameSearch").value.toLowerCase().trim();
     if(!keyword) {
-        renderGameList("libraryGameList", allGames);
+        sortGames(currentSort);
         return;
     }
     const filtered = allGames.filter(g => 
@@ -616,13 +819,25 @@ function searchGames() {
     renderGameList("libraryGameList", filtered);
 }
 
-// 显示上传表单
-function showUploadForm() {
-    const form = document.getElementById("uploadForm");
-    form.style.display = form.style.display === "none" ? "block" : "none";
+// 排序游戏
+function sortGames(type) {
+    currentSort = type;
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    
+    let sorted = [...allGames];
+    if(type === 'hot') {
+        sorted.sort((a,b) => (b.playCount||0) - (a.playCount||0));
+    }
+    renderGameList("libraryGameList", sorted);
 }
 
-// 上传游戏（云端保存，所有人可见）
+// 切换上传表单
+function toggleUploadForm() {
+    document.getElementById("uploadForm").classList.toggle('show');
+}
+
+// 上传游戏
 async function uploadGame() {
     const name = document.getElementById("gameName").value;
     const code = document.getElementById("gameCode").value;
@@ -642,15 +857,18 @@ async function uploadGame() {
         alert("上传成功！已同步到云端，所有玩家均可看见");
         document.getElementById("gameName").value = "";
         document.getElementById("gameCode").value = "";
-        document.getElementById("uploadForm").style.display = "none";
+        document.getElementById("uploadForm").classList.remove('show');
         loadAllGames();
     } catch(e) {
         alert("上传失败：" + e.message);
     }
 }
 
-// 打开游戏
-function playGame(id) {
+// 打开游戏（并增加游玩次数）
+async function playGame(id) {
+    try {
+        await fetch(`/api/playgame?id=${id}`);
+    } catch(e) {}
     window.location.href = `/game.html?id=${id}`;
 }
 
