@@ -3,111 +3,365 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>社区主页</title>
+<title>游戏社区盒子</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{padding:15px;font-family:system-ui;}
-button{padding:5px 10px;margin:3px;}
-input,textarea{width:100%;padding:6px;margin:4px 0;}
-.item{padding:8px;margin:6px 0;border:1px solid #aaa;cursor:pointer;}
-.post-item{padding:8px;margin:6px 0;border:1px solid #aaa;}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+body {
+    background: #f5f7fa;
+    color: #1d2129;
+    line-height: 1.5;
+}
+
+/* 顶部导航栏 */
+.navbar {
+    height: 56px;
+    background: #fff;
+    border-bottom: 1px solid #e5e6eb;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+.nav-inner {
+    max-width: 1280px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.nav-logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: #165dff;
+    letter-spacing: 0.5px;
+}
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: #4e5969;
+}
+.nav-user span {
+    font-weight: 500;
+    color: #1d2129;
+}
+
+/* 主体布局 */
+.container {
+    max-width: 1280px;
+    margin: 20px auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+/* 左侧侧边栏 */
+.sidebar {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #e5e6eb;
+    padding: 12px 0;
+    position: sticky;
+    top: 76px;
+}
+.menu-item {
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #4e5969;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+}
+.menu-item:hover {
+    background: #f2f3f5;
+    color: #165dff;
+}
+.menu-item.active {
+    background: #e8f3ff;
+    color: #165dff;
+    border-left-color: #165dff;
+    font-weight: 500;
+}
+
+/* 右侧主内容 */
+.main {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 通用卡片 */
+.card {
+    background: #fff;
+    border: 1px solid #e5e6eb;
+    border-radius: 10px;
+    padding: 20px;
+}
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #1d2129;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* 输入框和按钮 */
+input, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #c9cdd4;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
+    background: #fff;
+}
+input:focus, textarea:focus {
+    border-color: #165dff;
+}
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+.btn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 6px;
+    background: #165dff;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn:hover {
+    background: #0e42d2;
+}
+.btn-secondary {
+    background: #f2f3f5;
+    color: #4e5969;
+}
+.btn-secondary:hover {
+    background: #e5e6eb;
+}
+
+/* 列表项 */
+.list-item {
+    padding: 12px;
+    border: 1px solid #e5e6eb;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.list-item:hover {
+    border-color: #165dff;
+    box-shadow: 0 2px 8px rgba(22, 93, 255, 0.08);
+}
+.item-title {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+.item-meta {
+    font-size: 12px;
+    color: #86909c;
+}
+
+/* 发布区双栏 */
+.publish-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+@media (max-width: 900px) {
+    .publish-grid { grid-template-columns: 1fr; }
+    .container { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+}
 </style>
 </head>
 <body>
-<h2>游戏社区</h2>
 
-<div>
-    <h3>上传HTML游戏</h3>
-    <input id="gameName" placeholder="游戏名称">
-    <textarea id="gameCode" rows="6" placeholder="粘贴HTML游戏完整代码"></textarea>
-    <button onclick="uploadGame()">上传游戏</button>
+<!-- 顶部导航 -->
+<div class="navbar">
+    <div class="nav-inner">
+        <div class="nav-logo">游戏社区盒子</div>
+        <div class="nav-user">
+            <span id="userName">--</span>
+            <button class="btn btn-secondary" onclick="logout()">退出</button>
+        </div>
+    </div>
 </div>
 
-<div style="margin-top:15px;">
-    <h3>游戏列表（点击游玩）</h3>
-    <div id="gameList"></div>
-</div>
+<!-- 主体 -->
+<div class="container">
+    <!-- 左侧菜单 -->
+    <div class="sidebar">
+        <div class="menu-item active" onclick="scrollToArea('postArea')">社区帖子</div>
+        <div class="menu-item" onclick="scrollToArea('gameArea')">游戏广场</div>
+        <div class="menu-item" onclick="scrollToArea('publishArea')">发布内容</div>
+    </div>
 
-<div style="margin-top:15px;">
-    <h3>发帖</h3>
-    <textarea id="postContent" rows="3" placeholder="输入帖子内容"></textarea>
-    <button onclick="sendPost()">发布帖子</button>
-</div>
+    <!-- 右侧内容 -->
+    <div class="main">
+        <!-- 发布区 -->
+        <div class="card" id="publishArea">
+            <div class="card-title">快速发布</div>
+            <div class="publish-grid">
+                <div>
+                    <div style="font-weight:500;margin-bottom:8px;font-size:14px;">发布帖子</div>
+                    <textarea id="postContent" placeholder="分享你的想法..."></textarea>
+                    <button class="btn" onclick="sendPost()">发布帖子</button>
+                </div>
+                <div>
+                    <div style="font-weight:500;margin-bottom:8px;font-size:14px;">上传HTML游戏</div>
+                    <input id="gameName" placeholder="游戏名称">
+                    <textarea id="gameCode" rows="3" placeholder="粘贴完整HTML游戏代码"></textarea>
+                    <button class="btn" onclick="uploadGame()">上传游戏</button>
+                </div>
+            </div>
+        </div>
 
-<div style="margin-top:15px;">
-    <h3>社区帖子</h3>
-    <div id="postList"></div>
+        <!-- 游戏广场 -->
+        <div class="card" id="gameArea">
+            <div class="card-title">
+                <span>游戏广场</span>
+                <span style="font-size:12px;color:#86909c;font-weight:normal;">点击即可游玩</span>
+            </div>
+            <div id="gameList"></div>
+        </div>
+
+        <!-- 社区帖子 -->
+        <div class="card" id="postArea">
+            <div class="card-title">社区帖子</div>
+            <div id="postList"></div>
+        </div>
+    </div>
 </div>
 
 <script>
 const username = localStorage.getItem("user")
 if(!username) window.location.href="/index.html"
+document.getElementById("userName").textContent = username
 
+function logout(){
+    localStorage.removeItem("user")
+    window.location.href="/index.html"
+}
+
+function scrollToArea(id){
+    document.getElementById(id).scrollIntoView({behavior:'smooth'})
+    // 菜单高亮
+    document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'))
+    event.target.classList.add('active')
+}
+
+// 加载游戏列表
 async function loadGames(){
     try{
         const res = await fetch("/api/games")
         const list = await res.json()
         const div = document.getElementById("gameList")
-        div.innerHTML=""
-        list.forEach((g,idx)=>{
-            div.innerHTML += `<div class="item" onclick="playGame(${idx})">${g.name} | 作者：${g.user}</div>`
+        div.innerHTML = ""
+        if(list.length === 0){
+            div.innerHTML = '<div style="color:#86909c;text-align:center;padding:20px;">暂无游戏，快去上传第一个吧</div>'
+            return
+        }
+        list.forEach((g, idx)=>{
+            div.innerHTML += `
+            <div class="list-item" onclick="playGame(${idx})">
+                <div class="item-title">${g.name}</div>
+                <div class="item-meta">作者：${g.user} · ${g.time}</div>
+            </div>`
         })
     }catch(e){
         alert("游戏列表加载失败")
     }
 }
+
 function playGame(id){
     window.location.href = `/game.html?id=${id}`
 }
+
 async function uploadGame(){
     try{
         const name = document.getElementById("gameName").value
         const code = document.getElementById("gameCode").value
+        if(!name.trim() || !code.trim()){
+            alert("请填写游戏名称和代码")
+            return
+        }
         await fetch("/api/uploadgame",{
             method:"POST",
             headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({user:username,name,code})
+            body:JSON.stringify({user:username, name, code})
         })
         loadGames()
+        document.getElementById("gameName").value = ""
+        document.getElementById("gameCode").value = ""
         alert("上传成功！")
     }catch(e){
         alert("上传失败："+e)
     }
 }
 
+// 加载帖子
 async function loadPosts(){
     try{
         const res = await fetch("/api/posts")
         const list = await res.json()
         const div = document.getElementById("postList")
-        div.innerHTML=""
+        div.innerHTML = ""
+        if(list.length === 0){
+            div.innerHTML = '<div style="color:#86909c;text-align:center;padding:20px;">暂无帖子，抢个沙发吧</div>'
+            return
+        }
         list.forEach(p=>{
-            div.innerHTML += `<div class="post-item">${p.user} ${p.time}：${p.content}</div>`
+            div.innerHTML += `
+            <div class="list-item" style="cursor:default;">
+                <div class="item-meta" style="margin-bottom:6px;">${p.user} · ${p.time}</div>
+                <div>${p.content}</div>
+            </div>`
         })
     }catch(e){
         alert("帖子加载失败："+e)
     }
 }
+
 async function sendPost(){
     try{
         const content = document.getElementById("postContent").value
         if(!content.trim()){
-            alert("内容不能为空！")
+            alert("帖子内容不能为空")
             return
         }
         await fetch("/api/post",{
             method:"POST",
             headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({user:username,content})
+            body:JSON.stringify({user:username, content})
         })
         loadPosts()
-        document.getElementById("postContent").value=""
+        document.getElementById("postContent").value = ""
         alert("发帖成功！")
     }catch(e){
-        alert("发帖失败！"+e)
+        alert("发帖失败："+e)
     }
 }
 
+// 初始化
 loadGames()
 loadPosts()
 </script>
