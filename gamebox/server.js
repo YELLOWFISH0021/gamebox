@@ -1,62 +1,60 @@
 const express = require('express');
-const cors = require('cors');
-const fs = require('fs');
 const path = require('path');
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'Gamebox/公共')));
 
-// 简易本地文件存储（Render重启会清空，演示够用，给同学看没问题）
-const dbPath = './db.json';
-if(!fs.existsSync(dbPath)) fs.writeFileSync(dbPath, JSON.stringify({users:[], posts:[], games:[]}));
+// 内存数据库，服务器重启全部清空
+const users = {};
+const posts = [];
+const games = [];
 
-function readDB(){return JSON.parse(fs.readFileSync(dbPath))}
-function saveDB(data){fs.writeFileSync(dbPath, JSON.stringify(data))}
-
-//注册
-app.post('/api/register',(req,res)=>{
-  const {username,password}=req.body;
-  const db=readDB();
-  if(db.users.find(u=>u.username===username)) return res.json({ok:false,msg:"用户名已存在"});
-  db.users.push({username,password});
-  saveDB(db);
-  res.json({ok:true});
+// 登录注册接口
+app.post('/api/login', async (req,res)=>{
+    const {username,password,action} = req.body
+    if(action === "register"){
+        if(users[username]) return res.json({success:false,msg:"用户名已存在！"})
+        users[username] = {pwd:password}
+        return res.json({success:true,msg:"注册成功"})
+    }else if(action === "login"){
+        if(!users[username] || users[username].pwd !== password){
+            return res.json({success:false,msg:"账号或密码错误"})
+        }
+        return res.json({success:true})
+    }
 })
-//发帖
+
+// 发帖接口
 app.post('/api/post',(req,res)=>{
-  const {username,content}=req.body;
-  const db=readDB();
-  db.posts.push({username,content,time:new Date().toLocaleString()});
-  saveDB(db);
-  res.json({ok:true});
-})
-//获取帖子
-app.get('/api/posts',(req,res)=>{
-  const db=readDB();
-  res.json(db.posts);
-})
-//上传游戏html
-app.post('/api/uploadgame',(req,res)=>{
-  const {name,code,author}=req.body;
-  const db=readDB();
-  db.games.push({name,code,author,id:Date.now()});
-  saveDB(db);
-  res.json({ok:true});
-})
-//获取游戏列表
-app.get('/api/games',(req,res)=>{
-  const db=readDB();
-  res.json(db.games);
-})
-//读取单个游戏
-app.get('/api/game/:id',(req,res)=>{
-  const db=readDB();
-  const g=db.games.find(x=>x.id==req.params.id);
-  res.json(g||null);
+    const {user,content} = req.body
+    posts.unshift({user,content,time:new Date().toLocaleString()})
+    res.json({success:true})
 })
 
-app.get('/',(req,res)=>res.sendFile(path.join(__dirname,'public/index.html')));
-app.listen(PORT,()=>console.log(`Server running on port ${PORT}`));
+// 获取帖子列表
+app.get('/api/posts',(req,res)=>{
+    res.json(posts)
+})
+
+// 上传游戏代码
+app.post('/api/uploadgame',(req,res)=>{
+    const {user,name,code} = req.body
+    games.push({user,name,code,time:new Date().toLocaleString()})
+    res.json({success:true})
+})
+
+// 获取游戏列表
+app.get('/api/games',(req,res)=>{
+    res.json(games)
+})
+
+// 获取单个游戏代码
+app.get('/api/getgame',(req,res)=>{
+    const idx = Number(req.query.id)
+    res.json(games[idx])
+})
+
+const port = process.env.PORT || 3000;
+app.listen(port,()=>{
+    console.log(`服务启动，端口${port}`)
+})
