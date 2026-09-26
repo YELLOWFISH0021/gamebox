@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏运行页</title>
+    <style>
+        *{margin:0;padding:0}
+        body{background:#000;overflow:hidden;height:100vh;}
+        iframe{width:100vw;height:100vh;border:none;}
+    </style>
+</head>
+<body>
+<iframe id="gameFrame"></iframe>
+<script>
+const params = new URLSearchParams(location.search)
+const gid = params.get("id")
+fetch(`/api/getGame?id=${gid}`).then(r=>r.json()).then(data=>{
+    const blob = new Blob([data.code],{type:"text/html"})
+    const url = URL.createObjectURL(blob)
+    document.getElementById("gameFrame").src = url
+})
+</script>
+</body>
+</html>
