@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>游戏社区盒子 | 科技版</title>
 <style>
 * {
@@ -11,7 +11,6 @@
     box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
 }
-
 :root {
     --bg-main: #0a0e17;
     --bg-card: #111827;
@@ -24,12 +23,10 @@
     --purple: #8b5cf6;
     --danger: #ef4444;
 }
-
 html, body {
     width: 100%;
     overflow-x: hidden;
 }
-
 body {
     background: 
         radial-gradient(circle at 20% 20%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
@@ -41,7 +38,6 @@ body {
     line-height: 1.6;
     position: relative;
 }
-
 body::before {
     content: "";
     position: fixed;
@@ -56,7 +52,6 @@ body::before {
     pointer-events: none;
     z-index: 0;
 }
-
 .navbar {
     height: 56px;
     background: rgba(17, 24, 39, 0.85);
@@ -401,6 +396,43 @@ textarea {
 }
 .post-action.liked {
     color: var(--primary);
+}
+
+/* 回复区样式 */
+.comment-section {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-color);
+}
+.comment-list {
+    margin-bottom: 8px;
+}
+.comment-item {
+    padding: 6px 8px;
+    margin-bottom: 6px;
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 6px;
+    font-size: 12px;
+}
+.comment-user {
+    color: var(--primary);
+    font-weight: 500;
+    margin-right: 6px;
+}
+.comment-time {
+    color: var(--text-sub);
+    font-size: 10px;
+    margin-left: 6px;
+}
+.comment-input-row {
+    display: flex;
+    gap: 6px;
+}
+.comment-input {
+    flex: 1;
+    margin-bottom: 0;
+    padding: 6px 10px;
+    font-size: 12px;
 }
 
 .game-grid {
@@ -1068,6 +1100,7 @@ if(!username) window.location.href = "/index.html";
 document.getElementById("userName").textContent = username;
 document.getElementById("userAvatar").textContent = username.charAt(0).toUpperCase();
 
+const forbiddenWords = ['咸鱼蛋', '汉堡', '李梓墨', '大傻子'];
 let allGames = [];
 let allPosts = [];
 let currentSort = "new";
@@ -1081,7 +1114,7 @@ function switchPanel(name, el) {
     
     document.getElementById(name + 'Panel').classList.add('active');
     el.classList.add('active');
-
+    
     if(name === 'post') loadPosts();
     if(name === 'square' || name === 'library') loadAllGames();
     if(name === 'friend') {
@@ -1119,9 +1152,26 @@ async function loadPosts() {
 
         div.innerHTML = "";
         allPosts.forEach((p, idx) => {
+            const liked = p.likedUsers && p.likedUsers.includes(username);
             const item = document.createElement("div");
             item.className = "post-item";
-            const liked = p.likedUsers && p.likedUsers.includes(username);
+            
+            // 回复列表HTML
+            let commentsHtml = '';
+            if(p.comments && p.comments.length > 0) {
+                commentsHtml = '<div class="comment-list">';
+                p.comments.forEach(c => {
+                    commentsHtml += `
+                        <div class="comment-item">
+                            <span class="comment-user">${escapeHtml(c.user)}</span>
+                            ${escapeHtml(c.content)}
+                            <span class="comment-time">${c.time}</span>
+                        </div>
+                    `;
+                });
+                commentsHtml += '</div>';
+            }
+
             item.innerHTML = `
                 <div class="post-head">
                     <div class="post-avatar">${(p.user || "?").charAt(0).toUpperCase()}</div>
@@ -1135,8 +1185,19 @@ async function loadPosts() {
                     <div class="post-action ${liked ? 'liked' : ''}" onclick="likePost(${idx}, this)">
                         <span>👍</span> <span class="like-num">${p.likeCount || 0}</span> 点赞
                     </div>
-                    <div class="post-action">
+                    <div class="post-action" onclick="toggleReply(${idx})">
                         <span>💬</span> 回复
+                    </div>
+                    ${p.user === username ? `
+                    <div class="post-action" style="color: var(--danger)" onclick="deletePost(${idx})">
+                        <span>🗑️</span> 删除
+                    </div>` : ''}
+                </div>
+                <div class="comment-section" id="replyBox-${idx}" style="display:none;">
+                    ${commentsHtml}
+                    <div class="comment-input-row">
+                        <input class="comment-input" id="replyInput-${idx}" placeholder="写下你的回复...">
+                        <button class="btn btn-sm" onclick="submitReply(${idx})">回复</button>
                     </div>
                 </div>
             `;
@@ -1145,6 +1206,40 @@ async function loadPosts() {
         updateStats();
     } catch(e) {
         document.getElementById("postList").innerHTML = '<div class="empty">帖子加载失败</div>';
+    }
+}
+
+// 展开/收起回复框
+function toggleReply(idx) {
+    const box = document.getElementById(`replyBox-${idx}`);
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+}
+
+// 提交回复
+async function submitReply(idx) {
+    const input = document.getElementById(`replyInput-${idx}`);
+    const content = input.value.trim();
+    if(!content) { alert('回复内容不能为空'); return; }
+    
+    if(forbiddenWords.some(w => content.includes(w))) {
+        alert("回复内容包含违禁词，请修改");
+        return;
+    }
+
+    try {
+        const res = await fetch("/api/reply", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ postId: idx, username, content })
+        });
+        const data = await res.json();
+        if(data.success) {
+            loadPosts();
+        } else {
+            alert("回复失败：" + data.msg);
+        }
+    } catch(e) {
+        alert("回复失败");
     }
 }
 
@@ -1165,10 +1260,34 @@ async function likePost(idx, el) {
     }
 }
 
+async function deletePost(idx) {
+    if(!confirm("确定删除这条帖子？删除后无法恢复。")) return;
+    try {
+        const res = await fetch(`/api/post/${idx}`, {
+            method: "DELETE",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ username: username })
+        });
+        const data = await res.json();
+        if(data.success) {
+            loadPosts();
+        } else {
+            alert("删除失败：" + data.msg);
+        }
+    } catch(e) {
+        alert("删除失败");
+    }
+}
+
 async function sendPost() {
     const content = document.getElementById("postContent").value;
     if(!content.trim()) {
         alert("帖子内容不能为空！");
+        return;
+    }
+
+    if(forbiddenWords.some(w => content.includes(w))) {
+        alert("帖子内容包含违禁词，请修改后发布");
         return;
     }
 
@@ -1337,7 +1456,7 @@ async function searchUser() {
                 item.innerHTML = `
                     <span>${escapeHtml(u)}</span>
                     ${isFriend ? '<span style="color:var(--success);font-size:12px;">已添加</span>' : 
-                    `<button class="btn btn-sm" onclick="addFriend('${u}')">添加</button>`}
+                     `<button class="btn btn-sm" onclick="addFriend('${u}')">添加</button>`}
                 `;
                 resultBox.appendChild(item);
             });
@@ -1490,10 +1609,10 @@ async function loadChatHistory() {
 function renderMessage(msg) {
     const div = document.getElementById("chatMessages");
     const isSelf = msg.from === username;
-    
+
     const row = document.createElement("div");
     row.className = "msg-row" + (isSelf ? " self" : "");
-    
+
     let content = "";
     if(msg.type === 'text') {
         content = `<div class="msg-bubble">${escapeHtml(msg.content)}</div>`;
@@ -1605,7 +1724,7 @@ function showShareModal() {
     }
     const modal = document.getElementById("shareModal");
     const list = document.getElementById("shareGameList");
-    
+
     if(allGames.length === 0) {
         list.innerHTML = '<div style="text-align:center;color:var(--text-sub);padding:20px;">暂无游戏可分享</div>';
     } else {
