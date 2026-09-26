@@ -22,6 +22,7 @@
     --text-sub: #94a3b8;
     --success: #10b981;
     --purple: #8b5cf6;
+    --danger: #ef4444;
 }
 
 html, body {
@@ -153,6 +154,7 @@ body::before {
     display: flex;
     align-items: center;
     gap: 8px;
+    position: relative;
 }
 .menu-item:hover {
     background: rgba(14, 165, 233, 0.08);
@@ -163,6 +165,19 @@ body::before {
     color: var(--primary);
     border-left-color: var(--primary);
     font-weight: 500;
+}
+.badge {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--danger);
+    color: #fff;
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 10px;
+    min-width: 16px;
+    text-align: center;
 }
 
 .sidebar-stats {
@@ -284,6 +299,10 @@ textarea {
     transform: translateY(-1px);
     box-shadow: 0 6px 18px rgba(14, 165, 233, 0.35);
 }
+.btn-sm {
+    padding: 4px 10px;
+    font-size: 12px;
+}
 .btn-ghost {
     background: transparent;
     border: 1px solid var(--border-color);
@@ -295,6 +314,10 @@ textarea {
     color: var(--primary);
     transform: none;
     box-shadow: none;
+}
+.btn-danger {
+    background: var(--danger);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
 }
 
 .sort-group {
@@ -437,6 +460,23 @@ textarea {
     color: var(--success);
 }
 
+.del-btn {
+    margin-top: 8px;
+    width: 100%;
+    padding: 4px 0;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.del-btn:hover {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: #ef4444;
+}
+
 .search-box {
     position: relative;
     margin-bottom: 14px;
@@ -477,6 +517,330 @@ textarea {
     display: block;
 }
 
+/* ========== 好友系统样式 ========== */
+.friend-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 16px;
+    height: calc(100vh - 120px);
+}
+.friend-list-panel {
+    background: #0f172a;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.friend-search {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+.friend-search input {
+    margin-bottom: 0;
+    font-size: 13px;
+}
+.search-result {
+    position: absolute;
+    top: 100%;
+    left: 10px;
+    right: 10px;
+    background: #111827;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+    display: none;
+}
+.search-result.show {
+    display: block;
+}
+.search-user-item {
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 13px;
+}
+.search-user-item:last-child {
+    border-bottom: none;
+}
+
+.friend-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+}
+.friend-tab {
+    flex: 1;
+    padding: 8px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-sub);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+}
+.friend-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.friend-list {
+    flex: 1;
+    overflow-y: auto;
+}
+.friend-item {
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.2s;
+}
+.friend-item:hover {
+    background: rgba(14, 165, 233, 0.08);
+}
+.friend-item.active {
+    background: rgba(14, 165, 233, 0.12);
+}
+.friend-item-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981, #0ea5e9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 12px;
+}
+.friend-item-name {
+    flex: 1;
+    font-size: 13px;
+}
+.request-item {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 13px;
+}
+.request-btns {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.chat-panel {
+    background: #0f172a;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.chat-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chat-header-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+.chat-actions {
+    display: flex;
+    gap: 8px;
+}
+.chat-icon-btn {
+    padding: 4px 8px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-sub);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.chat-icon-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.msg-row {
+    display: flex;
+    gap: 8px;
+    max-width: 70%;
+}
+.msg-row.self {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+.msg-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+.msg-row.self .msg-avatar {
+    background: linear-gradient(135deg, #10b981, #0ea5e9);
+}
+.msg-bubble {
+    padding: 8px 12px;
+    background: #1e293b;
+    border-radius: 10px;
+    font-size: 13px;
+    word-break: break-word;
+}
+.msg-row.self .msg-bubble {
+    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+}
+.msg-time {
+    font-size: 10px;
+    color: var(--text-sub);
+    margin-top: 4px;
+}
+.msg-row.self .msg-time {
+    text-align: right;
+}
+.msg-img {
+    max-width: 200px;
+    border-radius: 8px;
+    display: block;
+}
+.msg-file {
+    padding: 8px 12px;
+    background: rgba(14, 165, 233, 0.1);
+    border: 1px solid rgba(14, 165, 233, 0.3);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 13px;
+}
+.msg-game {
+    padding: 10px 14px;
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    border-radius: 8px;
+    cursor: pointer;
+}
+.msg-game-title {
+    font-weight: 600;
+    color: #a78bfa;
+    margin-bottom: 4px;
+}
+.msg-game-desc {
+    font-size: 12px;
+    color: var(--text-sub);
+}
+
+.chat-input-area {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border-color);
+}
+.chat-toolbar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.tool-btn {
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-sub);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.tool-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+.chat-input-row {
+    display: flex;
+    gap: 8px;
+}
+.chat-input {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+/* 分享游戏弹窗 */
+.modal-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+.modal-mask.show {
+    display: flex;
+}
+.modal {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    width: 400px;
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.modal-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-close {
+    cursor: pointer;
+    color: var(--text-sub);
+}
+.modal-body {
+    padding: 14px 18px;
+    overflow-y: auto;
+    flex: 1;
+}
+.share-game-item {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+}
+.share-game-item:hover {
+    border-color: var(--primary);
+    background: rgba(14, 165, 233, 0.08);
+}
+
 @media screen and (max-width: 900px) {
     .container {
         grid-template-columns: 1fr;
@@ -503,18 +867,16 @@ textarea {
     .game-grid {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     }
+    .friend-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
 }
 
 @media screen and (max-width: 500px) {
     .nav-logo { font-size: 14px; }
     .nav-user span { display: none; }
     .game-cover { height: 80px; font-size: 28px; }
-}
-
-@media screen and (orientation: landscape) and (max-width: 900px) {
-    .game-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    }
 }
 </style>
 </head>
@@ -541,6 +903,10 @@ textarea {
         </div>
         <div class="menu-item" onclick="switchPanel('library', this)">
             <span>📚</span> 游戏库
+        </div>
+        <div class="menu-item" onclick="switchPanel('friend', this)">
+            <span>👥</span> 好友
+            <span class="badge" id="friendBadge" style="display:none;">0</span>
         </div>
         
         <div class="sidebar-stats">
@@ -630,6 +996,68 @@ textarea {
             </div>
         </div>
 
+        <!-- 好友系统 -->
+        <div class="panel" id="friendPanel">
+            <div class="friend-layout">
+                <div class="friend-list-panel">
+                    <div class="friend-search" style="position:relative;">
+                        <input type="text" id="userSearchInput" placeholder="搜索用户名添加好友..." oninput="searchUser()">
+                        <div class="search-result" id="searchResult"></div>
+                    </div>
+                    <div class="friend-tabs">
+                        <div class="friend-tab active" onclick="switchFriendTab('list', this)">好友</div>
+                        <div class="friend-tab" onclick="switchFriendTab('request', this)">
+                            请求 <span id="reqCount" style="color:var(--danger);"></span>
+                        </div>
+                    </div>
+                    <div class="friend-list" id="friendList"></div>
+                    <div class="friend-list" id="requestList" style="display:none;"></div>
+                </div>
+
+                <div class="chat-panel">
+                    <div class="chat-header">
+                        <div class="chat-header-name" id="chatFriendName">选择好友开始聊天</div>
+                        <div class="chat-actions">
+                            <button class="chat-icon-btn" onclick="showShareModal()">🎮 分享游戏</button>
+                            <button class="chat-icon-btn" onclick="inviteOnline()">🔗 联机邀请</button>
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div style="text-align:center;color:var(--text-sub);font-size:13px;padding:40px;">
+                            选择左侧好友开始聊天
+                        </div>
+                    </div>
+                    <div class="chat-input-area" id="chatInputArea" style="display:none;">
+                        <div class="chat-toolbar">
+                            <label class="tool-btn">
+                                🖼️ 图片
+                                <input type="file" accept="image/*" style="display:none;" onchange="sendImage(event)">
+                            </label>
+                            <label class="tool-btn">
+                                📁 文件
+                                <input type="file" style="display:none;" onchange="sendFile(event)">
+                            </label>
+                        </div>
+                        <div class="chat-input-row">
+                            <input class="chat-input" id="chatInput" placeholder="输入消息..." onkeydown="if(event.key==='Enter')sendMessage()">
+                            <button class="btn" onclick="sendMessage()">发送</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- 分享游戏弹窗 -->
+<div class="modal-mask" id="shareModal">
+    <div class="modal">
+        <div class="modal-header">
+            <span>选择要分享的游戏</span>
+            <span class="modal-close" onclick="closeShareModal()">✕</span>
+        </div>
+        <div class="modal-body" id="shareGameList"></div>
     </div>
 </div>
 
@@ -643,8 +1071,10 @@ document.getElementById("userAvatar").textContent = username.charAt(0).toUpperCa
 let allGames = [];
 let allPosts = [];
 let currentSort = "new";
+let currentFriend = null;
+let friendList = [];
 
-// 切换面板
+// ========== 面板切换 ==========
 function switchPanel(name, el) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
@@ -654,14 +1084,17 @@ function switchPanel(name, el) {
 
     if(name === 'post') loadPosts();
     if(name === 'square' || name === 'library') loadAllGames();
+    if(name === 'friend') {
+        loadFriendList();
+        loadFriendRequests();
+    }
 }
 
-// 帖子字数
+// ========== 帖子功能 ==========
 document.getElementById("postContent").addEventListener("input", function(){
     document.getElementById("charCount").textContent = this.value.length;
 });
 
-// 更新统计
 async function updateStats() {
     document.getElementById("statGames").textContent = allGames.length;
     document.getElementById("statPosts").textContent = allPosts.length;
@@ -672,7 +1105,6 @@ async function updateStats() {
     } catch(e) {}
 }
 
-// 加载帖子
 async function loadPosts() {
     try {
         const res = await fetch("/api/posts");
@@ -716,7 +1148,6 @@ async function loadPosts() {
     }
 }
 
-// 点赞（云端同步）
 async function likePost(idx, el) {
     if(el.classList.contains('liked')) return;
     try {
@@ -734,7 +1165,6 @@ async function likePost(idx, el) {
     }
 }
 
-// 发帖
 async function sendPost() {
     const content = document.getElementById("postContent").value;
     if(!content.trim()) {
@@ -757,23 +1187,22 @@ async function sendPost() {
     }
 }
 
-// 加载全部游戏
+// ========== 游戏功能 ==========
 async function loadAllGames() {
     try {
         const res = await fetch("/api/games");
         allGames = await res.json();
         
-        renderGameList("squareGameList", allGames.slice(0, 6), 0);
+        renderGameList("squareGameList", allGames.slice(0, 6));
         const list = currentSort === "new" ? allGames : [...allGames].sort((a,b) => (b.playCount||0) - (a.playCount||0));
-        renderGameList("libraryGameList", list, currentSort === "new" ? 0 : allGames.indexOf(list[0]));
+        renderGameList("libraryGameList", list);
         updateStats();
     } catch(e) {
         console.error("游戏加载失败", e);
     }
 }
 
-// 渲染游戏列表（修复跳转索引）
-function renderGameList(elementId, list, startIndex) {
+function renderGameList(elementId, list) {
     const div = document.getElementById(elementId);
     if(list.length === 0) {
         div.innerHTML = '<div class="empty">暂无游戏，快去上传第一个吧</div>';
@@ -781,11 +1210,13 @@ function renderGameList(elementId, list, startIndex) {
     }
 
     div.innerHTML = "";
-    list.forEach((g, i) => {
+    list.forEach((g) => {
         const realIndex = allGames.indexOf(g);
         const card = document.createElement("div");
         card.className = "game-card";
         card.onclick = () => playGame(realIndex);
+        
+        const isOwner = g.user === username;
         card.innerHTML = `
             <div class="game-cover">🎮</div>
             <div class="game-info">
@@ -794,13 +1225,13 @@ function renderGameList(elementId, list, startIndex) {
                     <span>作者：${escapeHtml(g.user || "匿名")}</span>
                     <span class="play-count">▶ ${g.playCount || 0}</span>
                 </div>
+                ${isOwner ? `<button class="del-btn" onclick="event.stopPropagation(); deleteGame(${realIndex})">删除</button>` : ''}
             </div>
         `;
         div.appendChild(card);
     });
 }
 
-// 搜索游戏
 function searchGames() {
     const keyword = document.getElementById("gameSearch").value.toLowerCase().trim();
     if(!keyword) {
@@ -811,10 +1242,9 @@ function searchGames() {
         g.name.toLowerCase().includes(keyword) || 
         g.user.toLowerCase().includes(keyword)
     );
-    renderGameList("libraryGameList", filtered, 0);
+    renderGameList("libraryGameList", filtered);
 }
 
-// 排序游戏
 function sortGames(type, el) {
     currentSort = type;
     document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
@@ -824,15 +1254,13 @@ function sortGames(type, el) {
     if(type === 'hot') {
         sorted.sort((a,b) => (b.playCount||0) - (a.playCount||0));
     }
-    renderGameList("libraryGameList", sorted, 0);
+    renderGameList("libraryGameList", sorted);
 }
 
-// 切换上传表单
 function toggleUploadForm() {
     document.getElementById("uploadForm").classList.toggle('show');
 }
 
-// 上传游戏
 async function uploadGame() {
     const name = document.getElementById("gameName").value;
     const code = document.getElementById("gameCode").value;
@@ -859,7 +1287,24 @@ async function uploadGame() {
     }
 }
 
-// 打开游戏
+async function deleteGame(id) {
+    if(!confirm("确定要删除这个游戏吗？删除后无法恢复。")) return;
+    try {
+        const res = await fetch(`/api/game/${id}`, {
+            method: "DELETE"
+        });
+        const data = await res.json();
+        if(data.success) {
+            alert("删除成功！");
+            loadAllGames();
+        } else {
+            alert("删除失败：" + data.msg);
+        }
+    } catch(e) {
+        alert("删除失败：" + e.message);
+    }
+}
+
 async function playGame(id) {
     try {
         await fetch(`/api/playgame?id=${id}`);
@@ -867,7 +1312,355 @@ async function playGame(id) {
     window.location.href = `/game.html?id=${id}`;
 }
 
-// 退出登录
+// ========== 好友系统 ==========
+async function searchUser() {
+    const keyword = document.getElementById("userSearchInput").value.trim();
+    const resultBox = document.getElementById("searchResult");
+    
+    if(!keyword) {
+        resultBox.classList.remove('show');
+        return;
+    }
+
+    try {
+        const res = await fetch(`/api/searchuser?keyword=${encodeURIComponent(keyword)}`);
+        const list = await res.json();
+        
+        if(list.length === 0) {
+            resultBox.innerHTML = '<div style="padding:10px;text-align:center;color:var(--text-sub);font-size:12px;">未找到用户</div>';
+        } else {
+            resultBox.innerHTML = "";
+            list.forEach(u => {
+                const isFriend = friendList.includes(u);
+                const item = document.createElement("div");
+                item.className = "search-user-item";
+                item.innerHTML = `
+                    <span>${escapeHtml(u)}</span>
+                    ${isFriend ? '<span style="color:var(--success);font-size:12px;">已添加</span>' : 
+                    `<button class="btn btn-sm" onclick="addFriend('${u}')">添加</button>`}
+                `;
+                resultBox.appendChild(item);
+            });
+        }
+        resultBox.classList.add('show');
+    } catch(e) {}
+}
+
+async function addFriend(name) {
+    try {
+        const res = await fetch("/api/friend/request", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({from: username, to: name})
+        });
+        const data = await res.json();
+        if(data.success) {
+            alert("好友请求已发送！");
+            document.getElementById("searchResult").classList.remove('show');
+            document.getElementById("userSearchInput").value = "";
+        } else {
+            alert(data.msg);
+        }
+    } catch(e) {
+        alert("发送失败");
+    }
+}
+
+function switchFriendTab(name, el) {
+    document.querySelectorAll('.friend-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    
+    if(name === 'list') {
+        document.getElementById("friendList").style.display = "block";
+        document.getElementById("requestList").style.display = "none";
+    } else {
+        document.getElementById("friendList").style.display = "none";
+        document.getElementById("requestList").style.display = "block";
+    }
+}
+
+async function loadFriendList() {
+    try {
+        const res = await fetch(`/api/friend/list?username=${encodeURIComponent(username)}`);
+        friendList = await res.json();
+        
+        const div = document.getElementById("friendList");
+        if(friendList.length === 0) {
+            div.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-sub);font-size:12px;">暂无好友，搜索添加吧</div>';
+            return;
+        }
+
+        div.innerHTML = "";
+        friendList.forEach(f => {
+            const item = document.createElement("div");
+            item.className = "friend-item";
+            item.onclick = () => openChat(f);
+            item.innerHTML = `
+                <div class="friend-item-avatar">${f.charAt(0).toUpperCase()}</div>
+                <div class="friend-item-name">${escapeHtml(f)}</div>
+            `;
+            div.appendChild(item);
+        });
+    } catch(e) {}
+}
+
+async function loadFriendRequests() {
+    try {
+        const res = await fetch(`/api/friend/requests?username=${encodeURIComponent(username)}`);
+        const list = await res.json();
+        
+        const badge = document.getElementById("friendBadge");
+        if(list.length > 0) {
+            badge.style.display = "block";
+            badge.textContent = list.length;
+            document.getElementById("reqCount").textContent = `(${list.length})`;
+        } else {
+            badge.style.display = "none";
+            document.getElementById("reqCount").textContent = "";
+        }
+
+        const div = document.getElementById("requestList");
+        if(list.length === 0) {
+            div.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-sub);font-size:12px;">暂无好友请求</div>';
+            return;
+        }
+
+        div.innerHTML = "";
+        list.forEach(r => {
+            const item = document.createElement("div");
+            item.className = "request-item";
+            item.innerHTML = `
+                <div>${escapeHtml(r.from)} 请求添加你为好友</div>
+                <div style="font-size:11px;color:var(--text-sub);">${r.time}</div>
+                <div class="request-btns">
+                    <button class="btn btn-sm" onclick="handleRequest(${r.id}, true)">同意</button>
+                    <button class="btn btn-sm btn-ghost" onclick="handleRequest(${r.id}, false)">拒绝</button>
+                </div>
+            `;
+            div.appendChild(item);
+        });
+    } catch(e) {}
+}
+
+async function handleRequest(id, accept) {
+    try {
+        await fetch("/api/friend/handle", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({id, accept, username})
+        });
+        loadFriendRequests();
+        loadFriendList();
+    } catch(e) {}
+}
+
+// ========== 聊天系统 ==========
+async function openChat(friend) {
+    currentFriend = friend;
+    document.getElementById("chatFriendName").textContent = friend;
+    document.getElementById("chatInputArea").style.display = "block";
+    
+    document.querySelectorAll('.friend-item').forEach(i => i.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    
+    await loadChatHistory();
+}
+
+async function loadChatHistory() {
+    if(!currentFriend) return;
+    try {
+        const res = await fetch(`/api/chat/history?user=${encodeURIComponent(username)}&friend=${encodeURIComponent(currentFriend)}`);
+        const messages = await res.json();
+        
+        const div = document.getElementById("chatMessages");
+        div.innerHTML = "";
+        
+        if(messages.length === 0) {
+            div.innerHTML = '<div style="text-align:center;color:var(--text-sub);font-size:13px;padding:40px;">开始和 '+currentFriend+' 聊天吧</div>';
+            return;
+        }
+
+        messages.forEach(msg => {
+            renderMessage(msg);
+        });
+        div.scrollTop = div.scrollHeight;
+    } catch(e) {}
+}
+
+function renderMessage(msg) {
+    const div = document.getElementById("chatMessages");
+    const isSelf = msg.from === username;
+    
+    const row = document.createElement("div");
+    row.className = "msg-row" + (isSelf ? " self" : "");
+    
+    let content = "";
+    if(msg.type === 'text') {
+        content = `<div class="msg-bubble">${escapeHtml(msg.content)}</div>`;
+    } else if(msg.type === 'image') {
+        content = `<div class="msg-bubble"><img class="msg-img" src="${msg.content}" alt="图片"/></div>`;
+    } else if(msg.type === 'file') {
+        const file = JSON.parse(msg.content);
+        content = `<a class="msg-file" href="${file.data}" download="${file.name}">📁 ${escapeHtml(file.name)}</a>`;
+    } else if(msg.type === 'game') {
+        const game = JSON.parse(msg.content);
+        content = `<div class="msg-game" onclick="playGame(${game.id})">
+            <div class="msg-game-title">🎮 ${escapeHtml(game.name)}</div>
+            <div class="msg-game-desc">点击开始游戏</div>
+        </div>`;
+    }
+
+    row.innerHTML = `
+        <div class="msg-avatar">${msg.from.charAt(0).toUpperCase()}</div>
+        <div>
+            ${content}
+            <div class="msg-time">${msg.time}</div>
+        </div>
+    `;
+    div.appendChild(row);
+    div.scrollTop = div.scrollHeight;
+}
+
+async function sendMessage() {
+    if(!currentFriend) return;
+    const input = document.getElementById("chatInput");
+    const content = input.value.trim();
+    if(!content) return;
+
+    try {
+        await fetch("/api/chat/send", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                from: username,
+                to: currentFriend,
+                type: 'text',
+                content
+            })
+        });
+        input.value = "";
+        loadChatHistory();
+    } catch(e) {
+        alert("发送失败");
+    }
+}
+
+function sendImage(e) {
+    const file = e.target.files[0];
+    if(!file || !currentFriend) return;
+    
+    const reader = new FileReader();
+    reader.onload = async () => {
+        try {
+            await fetch("/api/chat/send", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    from: username,
+                    to: currentFriend,
+                    type: 'image',
+                    content: reader.result
+                })
+            });
+            loadChatHistory();
+        } catch(err) {
+            alert("发送失败");
+        }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+}
+
+function sendFile(e) {
+    const file = e.target.files[0];
+    if(!file || !currentFriend) return;
+    
+    const reader = new FileReader();
+    reader.onload = async () => {
+        try {
+            await fetch("/api/chat/send", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    from: username,
+                    to: currentFriend,
+                    type: 'file',
+                    content: JSON.stringify({name: file.name, data: reader.result})
+                })
+            });
+            loadChatHistory();
+        } catch(err) {
+            alert("发送失败");
+        }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+}
+
+// ========== 分享游戏 ==========
+function showShareModal() {
+    if(!currentFriend) {
+        alert("请先选择好友");
+        return;
+    }
+    const modal = document.getElementById("shareModal");
+    const list = document.getElementById("shareGameList");
+    
+    if(allGames.length === 0) {
+        list.innerHTML = '<div style="text-align:center;color:var(--text-sub);padding:20px;">暂无游戏可分享</div>';
+    } else {
+        list.innerHTML = "";
+        allGames.forEach((g, idx) => {
+            const item = document.createElement("div");
+            item.className = "share-game-item";
+            item.onclick = () => shareGame(idx, g.name);
+            item.innerHTML = `
+                <span style="font-size:24px;">🎮</span>
+                <div>
+                    <div style="font-weight:500;">${escapeHtml(g.name)}</div>
+                    <div style="font-size:12px;color:var(--text-sub);">作者：${escapeHtml(g.user)}</div>
+                </div>
+            `;
+            list.appendChild(item);
+        });
+    }
+    modal.classList.add('show');
+}
+
+function closeShareModal() {
+    document.getElementById("shareModal").classList.remove('show');
+}
+
+async function shareGame(id, name) {
+    if(!currentFriend) return;
+    try {
+        await fetch("/api/chat/send", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                from: username,
+                to: currentFriend,
+                type: 'game',
+                content: JSON.stringify({id, name})
+            })
+        });
+        closeShareModal();
+        loadChatHistory();
+        alert("游戏分享成功！");
+    } catch(e) {
+        alert("分享失败");
+    }
+}
+
+function inviteOnline() {
+    if(!currentFriend) {
+        alert("请先选择好友");
+        return;
+    }
+    alert("联机功能开发中，敬请期待！\n后续可以直接邀请好友进入联机房间");
+}
+
+// ========== 通用 ==========
 function logout() {
     if(confirm("确定退出登录吗？")) {
         localStorage.removeItem("user");
@@ -880,6 +1673,13 @@ function escapeHtml(str) {
     div.textContent = str;
     return div.innerHTML;
 }
+
+// 点击空白关闭搜索结果
+document.addEventListener("click", e => {
+    if(!e.target.closest('.friend-search')) {
+        document.getElementById("searchResult").classList.remove('show');
+    }
+});
 
 // 初始化
 loadPosts();
