@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社区主页</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;color:#fff;font-family:system-ui;}
+        body{background:#121826;min-height:100vh;padding:24px;}
+        .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+        .card{background:#1f2940;border:1px solid #334160;border-radius:10px;padding:20px;margin-bottom:16px;}
+        textarea,input{width:100%;background:#27334d;border:none;padding:10px;border-radius:6px;margin:8px 0;color:white;}
+        button{padding:8px 14px;background:#2563eb;border:none;border-radius:6px;cursor:pointer;}
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <h2>游戏社区盒子 - 主页</h2>
+        <button onclick="logout()">退出登录</button>
+    </div>
+
+    <div class="card">
+        <h3>📝 发帖</h3>
+        <textarea id="postContent" placeholder="在这里发帖..."></textarea>
+        <button onclick="sendPost()">发布帖子</button>
+    </div>
+
+    <div class="card">
+        <h3>🎮 上传HTML游戏</h3>
+        <textarea id="gameCode" placeholder="粘贴HTML游戏完整代码"></textarea>
+        <input type="text" id="gameName" placeholder="游戏名称">
+        <button onclick="uploadGame()">上传游戏</button>
+    </div>
+
+    <div class="card">
+        <h3>📋 帖子列表</h3>
+        <div id="postList"></div>
+    </div>
+
+    <div class="card">
+        <h3>🕹️ 游戏库</h3>
+        <div id="gameList"></div>
+    </div>
+
+<script>
+const user = localStorage.getItem("user")
+if(!user) window.location.href="/index.html"
+
+async function loadData(){
+    const res = await fetch("/api/getData")
+    const json = await res.json()
+    let postHtml = ""
+    json.posts.forEach(p=>{
+        postHtml += `<div style="padding:8px;border-bottom:#333 solid 1px">${p.user}: ${p.content}</div>`
+    })
+    document.getElementById("postList").innerHTML = postHtml
+
+    let gameHtml = ""
+    json.games.forEach(g=>{
+        gameHtml += `<div style="padding:8px;border-bottom:#333 solid 1px"><div>${g.name}</div><button onclick="openGame('${g.id}')">打开游戏</button></div>`
+    })
+    document.getElementById("gameList").innerHTML = gameHtml
+}
+
+async function sendPost(){
+    const content = document.getElementById("postContent").value
+    await fetch("/api/addPost",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({user,content})
+    })
+    loadData()
+}
+
+async function uploadGame(){
+    const name = document.getElementById("gameName").value
+    const code = document.getElementById("gameCode").value
+    await fetch("/api/addGame",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({name,code,user})
+    })
+    loadData()
+}
+
+function openGame(id){
+    window.open(`/game.html?id=${id}`)
+}
+function logout(){
+    localStorage.removeItem("user")
+    window.location.href="/index.html"
+}
+loadData()
+</script>
+</body>
+</html>
