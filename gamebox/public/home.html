@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>游戏社区盒子 | 科技版</title>
 <style>
 * {
@@ -15,7 +15,6 @@
 :root {
     --bg-main: #0a0e17;
     --bg-card: #111827;
-    --bg-card-hover: #152033;
     --border-color: #1e293b;
     --primary: #0ea5e9;
     --primary-glow: rgba(14, 165, 233, 0.4);
@@ -23,6 +22,11 @@
     --text-sub: #94a3b8;
     --success: #10b981;
     --purple: #8b5cf6;
+}
+
+html, body {
+    width: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -37,7 +41,6 @@ body {
     position: relative;
 }
 
-/* 科技网格背景 */
 body::before {
     content: "";
     position: fixed;
@@ -53,9 +56,8 @@ body::before {
     z-index: 0;
 }
 
-/* 顶部导航栏 */
 .navbar {
-    height: 60px;
+    height: 56px;
     background: rgba(17, 24, 39, 0.85);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
@@ -68,7 +70,7 @@ body::before {
     max-width: 1400px;
     height: 100%;
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -76,22 +78,22 @@ body::before {
     z-index: 1;
 }
 .nav-logo {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     background: linear-gradient(90deg, #0ea5e9, #8b5cf6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
 .nav-user {
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 14px;
+    gap: 10px;
+    font-size: 13px;
 }
 .user-avatar {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
     display: flex;
@@ -99,15 +101,16 @@ body::before {
     justify-content: center;
     font-weight: 700;
     color: #fff;
+    font-size: 12px;
     box-shadow: 0 0 12px var(--primary-glow);
 }
 .logout-btn {
-    padding: 6px 14px;
+    padding: 5px 12px;
     border: 1px solid var(--border-color);
     background: transparent;
     color: var(--text-sub);
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 12px;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -116,34 +119,32 @@ body::before {
     color: var(--primary);
 }
 
-/* 主体布局 */
 .container {
     max-width: 1400px;
-    margin: 24px auto;
-    padding: 0 24px;
+    margin: 20px auto;
+    padding: 0 20px;
     display: grid;
-    grid-template-columns: 240px 1fr;
-    gap: 24px;
+    grid-template-columns: 220px 1fr;
+    gap: 20px;
     align-items: start;
     position: relative;
     z-index: 1;
 }
 
-/* 左侧侧边栏 */
 .sidebar {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 16px 0;
+    padding: 12px 0;
     position: sticky;
-    top: 84px;
+    top: 76px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
 }
 .menu-item {
-    padding: 12px 24px;
+    padding: 10px 20px;
     font-size: 14px;
     color: var(--text-sub);
     cursor: pointer;
@@ -151,7 +152,7 @@ body::before {
     border-left: 3px solid transparent;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 .menu-item:hover {
     background: rgba(14, 165, 233, 0.08);
@@ -164,10 +165,9 @@ body::before {
     font-weight: 500;
 }
 
-/* 侧边栏数据统计 */
 .sidebar-stats {
-    margin: 12px 16px 0;
-    padding: 14px;
+    margin: 12px 14px 0;
+    padding: 12px;
     background: rgba(15, 23, 42, 0.8);
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -177,7 +177,7 @@ body::before {
 .stat-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 .stat-row:last-child {
     margin-bottom: 0;
@@ -185,30 +185,27 @@ body::before {
 .stat-num {
     color: var(--primary);
     font-weight: 600;
-    font-size: 14px;
 }
 
-/* 右侧主内容 */
 .main {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 }
 .panel {
     display: none;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 }
 .panel.active {
     display: flex;
 }
 
-/* 通用卡片 */
 .card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 20px;
+    padding: 18px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     transition: all 0.3s;
     position: relative;
@@ -217,9 +214,9 @@ body::before {
     border-color: rgba(14, 165, 233, 0.4);
 }
 .card-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -233,29 +230,27 @@ body::before {
 .card-title-left::before {
     content: "";
     width: 3px;
-    height: 16px;
+    height: 14px;
     background: linear-gradient(180deg, #0ea5e9, #8b5cf6);
     border-radius: 2px;
 }
 
-/* 公告栏 */
 .notice-bar {
-    padding: 12px 16px;
+    padding: 10px 14px;
     background: linear-gradient(90deg, rgba(14, 165, 233, 0.15), rgba(139, 92, 246, 0.15));
     border: 1px solid rgba(14, 165, 233, 0.3);
     border-radius: 8px;
-    font-size: 13px;
+    font-size: 12px;
     color: #7dd3fc;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
-/* 输入框和按钮 */
 input, textarea {
     width: 100%;
-    padding: 10px 14px;
+    padding: 9px 12px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     font-size: 14px;
@@ -263,7 +258,7 @@ input, textarea {
     background: #0f172a;
     color: var(--text-main);
     transition: all 0.2s;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 input:focus, textarea:focus {
     border-color: var(--primary);
@@ -271,15 +266,15 @@ input:focus, textarea:focus {
 }
 textarea {
     resize: vertical;
-    min-height: 90px;
+    min-height: 80px;
 }
 .btn {
-    padding: 9px 20px;
+    padding: 8px 18px;
     border: none;
     border-radius: 8px;
     background: linear-gradient(90deg, #0ea5e9, #2563eb);
     color: #fff;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.25s;
@@ -302,14 +297,13 @@ textarea {
     box-shadow: none;
 }
 
-/* 排序按钮组 */
 .sort-group {
     display: flex;
-    gap: 8px;
+    gap: 6px;
 }
 .sort-btn {
-    padding: 5px 12px;
-    font-size: 12px;
+    padding: 4px 10px;
+    font-size: 11px;
     border-radius: 6px;
     border: 1px solid var(--border-color);
     background: transparent;
@@ -323,13 +317,12 @@ textarea {
     color: #fff;
 }
 
-/* 帖子列表 */
 .post-item {
-    padding: 16px;
+    padding: 14px;
     background: #0f172a;
     border: 1px solid var(--border-color);
     border-radius: 10px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     transition: all 0.2s;
 }
 .post-item:hover {
@@ -338,46 +331,47 @@ textarea {
 .post-head {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 .post-avatar {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     color: #fff;
 }
 .post-meta {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-sub);
 }
 .post-content {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-main);
     white-space: pre-wrap;
     word-break: break-word;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 .post-footer {
     display: flex;
-    gap: 16px;
-    padding-top: 8px;
+    gap: 14px;
+    padding-top: 6px;
     border-top: 1px solid var(--border-color);
 }
 .post-action {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-sub);
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 4px;
     transition: color 0.2s;
+    user-select: none;
 }
 .post-action:hover {
     color: var(--primary);
@@ -386,11 +380,10 @@ textarea {
     color: var(--primary);
 }
 
-/* 游戏网格 */
 .game-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
 }
 .game-card {
     background: #0f172a;
@@ -401,17 +394,17 @@ textarea {
     transition: all 0.3s;
 }
 .game-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
     border-color: var(--primary);
     box-shadow: 0 8px 24px rgba(14, 165, 233, 0.2);
 }
 .game-cover {
-    height: 110px;
+    height: 100px;
     background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    font-size: 36px;
     position: relative;
 }
 .game-cover::after {
@@ -424,18 +417,18 @@ textarea {
     background: linear-gradient(transparent, rgba(0,0,0,0.3));
 }
 .game-info {
-    padding: 12px;
+    padding: 10px;
 }
 .game-name {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .game-meta {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-sub);
     display: flex;
     justify-content: space-between;
@@ -444,41 +437,38 @@ textarea {
     color: var(--success);
 }
 
-/* 搜索框 */
 .search-box {
     position: relative;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 .search-box input {
     margin-bottom: 0;
-    padding-left: 38px;
+    padding-left: 34px;
 }
 .search-icon {
     position: absolute;
-    left: 12px;
+    left: 10px;
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-sub);
-    font-size: 16px;
+    font-size: 14px;
 }
 
-/* 空状态 */
 .empty {
-    padding: 40px;
+    padding: 30px;
     text-align: center;
     color: var(--text-sub);
-    font-size: 14px;
+    font-size: 13px;
     border: 1px dashed var(--border-color);
     border-radius: 10px;
     background: rgba(15, 23, 42, 0.5);
     grid-column: 1/-1;
 }
 
-/* 上传表单 */
 .upload-form {
     display: none;
-    margin-bottom: 20px;
-    padding: 16px;
+    margin-bottom: 18px;
+    padding: 14px;
     background: #0a0e17;
     border-radius: 8px;
     border: 1px solid var(--border-color);
@@ -487,20 +477,7 @@ textarea {
     display: block;
 }
 
-/* 加载骨架 */
-.skeleton {
-    background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
-    background-size: 200% 100%;
-    animation: skeleton 1.5s infinite;
-    border-radius: 6px;
-}
-@keyframes skeleton {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
-/* 响应式 */
-@media (max-width: 900px) {
+@media screen and (max-width: 900px) {
     .container {
         grid-template-columns: 1fr;
     }
@@ -508,13 +485,13 @@ textarea {
         position: static;
         flex-direction: row;
         overflow-x: auto;
-        padding: 8px;
+        padding: 6px;
     }
     .menu-item {
         flex-shrink: 0;
         border-left: none;
         border-bottom: 3px solid transparent;
-        padding: 10px 16px;
+        padding: 8px 14px;
     }
     .menu-item.active {
         border-left: none;
@@ -524,14 +501,25 @@ textarea {
         display: none;
     }
     .game-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .nav-logo { font-size: 14px; }
+    .nav-user span { display: none; }
+    .game-cover { height: 80px; font-size: 28px; }
+}
+
+@media screen and (orientation: landscape) and (max-width: 900px) {
+    .game-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     }
 }
 </style>
 </head>
 <body>
 
-<!-- 顶部导航 -->
 <div class="navbar">
     <div class="nav-inner">
         <div class="nav-logo">🎮 游戏社区盒子</div>
@@ -543,21 +531,18 @@ textarea {
     </div>
 </div>
 
-<!-- 主体 -->
 <div class="container">
-    <!-- 左侧菜单 -->
     <div class="sidebar">
-        <div class="menu-item active" onclick="switchPanel('post')">
+        <div class="menu-item active" onclick="switchPanel('post', this)">
             <span>💬</span> 社区帖子
         </div>
-        <div class="menu-item" onclick="switchPanel('square')">
+        <div class="menu-item" onclick="switchPanel('square', this)">
             <span>🎯</span> 游戏广场
         </div>
-        <div class="menu-item" onclick="switchPanel('library')">
+        <div class="menu-item" onclick="switchPanel('library', this)">
             <span>📚</span> 游戏库
         </div>
         
-        <!-- 数据统计面板 -->
         <div class="sidebar-stats">
             <div class="stat-row">
                 <span>🎮 游戏总数</span>
@@ -568,16 +553,14 @@ textarea {
                 <span class="stat-num" id="statPosts">0</span>
             </div>
             <div class="stat-row">
-                <span>👤 当前用户</span>
-                <span class="stat-num" id="statUsers">1</span>
+                <span>👤 注册用户</span>
+                <span class="stat-num" id="statUsers">0</span>
             </div>
         </div>
     </div>
 
-    <!-- 右侧内容 -->
     <div class="main">
-
-        <!-- 1. 社区帖子页面 -->
+        <!-- 社区帖子 -->
         <div class="panel active" id="postPanel">
             <div class="card">
                 <div class="notice-bar">
@@ -602,25 +585,25 @@ textarea {
             </div>
         </div>
 
-        <!-- 2. 游戏广场页面 -->
+        <!-- 游戏广场 -->
         <div class="panel" id="squarePanel">
             <div class="card">
                 <div class="card-title">
                     <div class="card-title-left">🔥 最新上架</div>
-                    <span style="font-size:12px;color:var(--text-sub);font-weight:normal;">云端同步 · 全员可见</span>
+                    <span style="font-size:11px;color:var(--text-sub);font-weight:normal;">云端同步 · 全员可见</span>
                 </div>
                 <div id="squareGameList" class="game-grid"></div>
             </div>
         </div>
 
-        <!-- 3. 游戏库页面 -->
+        <!-- 游戏库 -->
         <div class="panel" id="libraryPanel">
             <div class="card">
                 <div class="card-title">
                     <div class="card-title-left">📚 全部游戏库</div>
                     <div class="sort-group">
-                        <button class="sort-btn active" onclick="sortGames('new')">最新发布</button>
-                        <button class="sort-btn" onclick="sortGames('hot')">最多游玩</button>
+                        <button class="sort-btn active" onclick="sortGames('new', this)">最新发布</button>
+                        <button class="sort-btn" onclick="sortGames('hot', this)">最多游玩</button>
                     </div>
                 </div>
                 
@@ -629,17 +612,16 @@ textarea {
                     <input id="gameSearch" placeholder="搜索游戏名称或作者..." oninput="searchGames()">
                 </div>
 
-                <div style="margin-bottom:16px;">
+                <div style="margin-bottom:14px;">
                     <button class="btn" onclick="toggleUploadForm()">⬆️ 上传新游戏</button>
                 </div>
                 
-                <!-- 上传表单 -->
                 <div class="upload-form" id="uploadForm">
-                    <div style="font-weight:500; margin-bottom:10px;">上传HTML游戏</div>
+                    <div style="font-weight:500; margin-bottom:8px; font-size:13px;">上传HTML游戏</div>
                     <input id="gameName" placeholder="游戏名称">
                     <textarea id="gameCode" rows="4" placeholder="粘贴完整HTML游戏代码"></textarea>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:12px; color:var(--text-sub);">上传后自动同步云端，所有玩家可见</span>
+                        <span style="font-size:11px; color:var(--text-sub);">上传后自动同步云端，所有玩家可见</span>
                         <button class="btn" onclick="uploadGame()">确认上传</button>
                     </div>
                 </div>
@@ -655,36 +637,39 @@ textarea {
 const username = localStorage.getItem("user");
 if(!username) window.location.href = "/index.html";
 
-// 初始化用户信息
 document.getElementById("userName").textContent = username;
 document.getElementById("userAvatar").textContent = username.charAt(0).toUpperCase();
 
-// 全局数据
 let allGames = [];
 let allPosts = [];
 let currentSort = "new";
 
 // 切换面板
-function switchPanel(name) {
+function switchPanel(name, el) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
     
     document.getElementById(name + 'Panel').classList.add('active');
-    event.currentTarget.classList.add('active');
+    el.classList.add('active');
 
     if(name === 'post') loadPosts();
     if(name === 'square' || name === 'library') loadAllGames();
 }
 
-// 帖子字数统计
+// 帖子字数
 document.getElementById("postContent").addEventListener("input", function(){
     document.getElementById("charCount").textContent = this.value.length;
 });
 
-// 更新侧边栏统计
-function updateStats() {
+// 更新统计
+async function updateStats() {
     document.getElementById("statGames").textContent = allGames.length;
     document.getElementById("statPosts").textContent = allPosts.length;
+    try {
+        const res = await fetch("/api/usercount");
+        const data = await res.json();
+        document.getElementById("statUsers").textContent = data.count;
+    } catch(e) {}
 }
 
 // 加载帖子
@@ -704,6 +689,7 @@ async function loadPosts() {
         allPosts.forEach((p, idx) => {
             const item = document.createElement("div");
             item.className = "post-item";
+            const liked = p.likedUsers && p.likedUsers.includes(username);
             item.innerHTML = `
                 <div class="post-head">
                     <div class="post-avatar">${(p.user || "?").charAt(0).toUpperCase()}</div>
@@ -714,8 +700,8 @@ async function loadPosts() {
                 </div>
                 <div class="post-content">${escapeHtml(p.content || "")}</div>
                 <div class="post-footer">
-                    <div class="post-action" onclick="likePost(${idx}, this)">
-                        <span>👍</span> <span class="like-num">0</span> 点赞
+                    <div class="post-action ${liked ? 'liked' : ''}" onclick="likePost(${idx}, this)">
+                        <span>👍</span> <span class="like-num">${p.likeCount || 0}</span> 点赞
                     </div>
                     <div class="post-action">
                         <span>💬</span> 回复
@@ -730,12 +716,22 @@ async function loadPosts() {
     }
 }
 
-// 点赞
-function likePost(idx, el) {
+// 点赞（云端同步）
+async function likePost(idx, el) {
     if(el.classList.contains('liked')) return;
-    el.classList.add('liked');
-    const num = el.querySelector('.like-num');
-    num.textContent = Number(num.textContent) + 1;
+    try {
+        const res = await fetch("/api/like", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({postId: idx, username: username})
+        });
+        const data = await res.json();
+        el.classList.add('liked');
+        el.querySelector('.like-num').textContent = data.likeCount;
+        allPosts[idx].likeCount = data.likeCount;
+    } catch(e) {
+        alert("点赞失败");
+    }
 }
 
 // 发帖
@@ -767,18 +763,17 @@ async function loadAllGames() {
         const res = await fetch("/api/games");
         allGames = await res.json();
         
-        renderGameList("squareGameList", allGames.slice(0, 6));
-        renderGameList("libraryGameList", 
-            currentSort === "new" ? allGames : [...allGames].sort((a,b) => (b.playCount||0) - (a.playCount||0))
-        );
+        renderGameList("squareGameList", allGames.slice(0, 6), 0);
+        const list = currentSort === "new" ? allGames : [...allGames].sort((a,b) => (b.playCount||0) - (a.playCount||0));
+        renderGameList("libraryGameList", list, currentSort === "new" ? 0 : allGames.indexOf(list[0]));
         updateStats();
     } catch(e) {
         console.error("游戏加载失败", e);
     }
 }
 
-// 渲染游戏列表
-function renderGameList(elementId, list) {
+// 渲染游戏列表（修复跳转索引）
+function renderGameList(elementId, list, startIndex) {
     const div = document.getElementById(elementId);
     if(list.length === 0) {
         div.innerHTML = '<div class="empty">暂无游戏，快去上传第一个吧</div>';
@@ -786,7 +781,7 @@ function renderGameList(elementId, list) {
     }
 
     div.innerHTML = "";
-    list.forEach((g, idx) => {
+    list.forEach((g, i) => {
         const realIndex = allGames.indexOf(g);
         const card = document.createElement("div");
         card.className = "game-card";
@@ -797,7 +792,7 @@ function renderGameList(elementId, list) {
                 <div class="game-name">${escapeHtml(g.name || "未命名游戏")}</div>
                 <div class="game-meta">
                     <span>作者：${escapeHtml(g.user || "匿名")}</span>
-                    <span class="play-count">▶ ${g.playCount || 0} 次</span>
+                    <span class="play-count">▶ ${g.playCount || 0}</span>
                 </div>
             </div>
         `;
@@ -809,27 +804,27 @@ function renderGameList(elementId, list) {
 function searchGames() {
     const keyword = document.getElementById("gameSearch").value.toLowerCase().trim();
     if(!keyword) {
-        sortGames(currentSort);
+        sortGames(currentSort, document.querySelector('.sort-btn.active'));
         return;
     }
     const filtered = allGames.filter(g => 
         g.name.toLowerCase().includes(keyword) || 
         g.user.toLowerCase().includes(keyword)
     );
-    renderGameList("libraryGameList", filtered);
+    renderGameList("libraryGameList", filtered, 0);
 }
 
 // 排序游戏
-function sortGames(type) {
+function sortGames(type, el) {
     currentSort = type;
     document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-    event.currentTarget.classList.add('active');
+    el.classList.add('active');
     
     let sorted = [...allGames];
     if(type === 'hot') {
         sorted.sort((a,b) => (b.playCount||0) - (a.playCount||0));
     }
-    renderGameList("libraryGameList", sorted);
+    renderGameList("libraryGameList", sorted, 0);
 }
 
 // 切换上传表单
@@ -864,7 +859,7 @@ async function uploadGame() {
     }
 }
 
-// 打开游戏（并增加游玩次数）
+// 打开游戏
 async function playGame(id) {
     try {
         await fetch(`/api/playgame?id=${id}`);
@@ -880,7 +875,6 @@ function logout() {
     }
 }
 
-// XSS防护
 function escapeHtml(str) {
     const div = document.createElement("div");
     div.textContent = str;
