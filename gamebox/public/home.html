@@ -3,29 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>游戏社区 - 内嵌沙盒联机</title>
+<title>游戏社区</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui}
 body{background:#1a1a22;color:#eee;padding:12px}
 .login-box{max-width:420px;margin:30px auto;background:#272733;padding:20px;border-radius:10px}
 .panel{background:#272733;border-radius:10px;padding:14px;margin:10px 0}
-input{width:100%;padding:8px;margin:6px 0;background:#333;border:1px solid #444;color:#fff;border-radius:6px}
+input,textarea{width:100%;padding:8px;margin:6px 0;background:#333;border:1px solid #444;color:#fff;border-radius:6px}
 button{padding:8px 14px;border:none;border-radius:6px;cursor:pointer;margin:4px;background:#2385d0;color:white}
-button.secondary{background:#555}
-button.invite-btn{background:#27ae60}
+button.secondary{background:#444}
 .flex{display:flex;gap:8px;flex-wrap:wrap}
 .msg-item{padding:8px;border-bottom:1px solid #333}
-.invite-msg{background:#275038;padding:6px}
+.invite-btn{background:#27ae60}
 #chatArea{height:280px;overflow-y:auto;background:#222;padding:10px;border-radius:8px;margin:8px 0}
-
-/* 内嵌沙盒游戏全屏容器 */
-#sandboxWrap{display:none;position:fixed;inset:0;background:#000;z-index:100}
-#sandboxCanvas{display:block;background:#87CEEB}
-#sandboxMenu{position:absolute;inset:0;background:rgba(0,0,0,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:10}
-#sandboxHud{position:absolute;top:10px;left:10px;z-index:9;gap:8px;flex-direction:column;display:none}
-#sandboxChatBox{position:absolute;bottom:10px;left:10px;z-index:9;display:none;flex-direction:column;gap:4px}
-#sandboxChatLog{width:280px;height:120px;background:rgba(0,0,0,0.6);border-radius:6px;padding:8px;font-size:12px;overflow-y:auto}
-#sandboxChatInput{width:280px;padding:6px 8px;border-radius:6px;border:1px solid #444;background:#222;color:#fff;font-size:12px}
 </style>
 </head>
 <body>
@@ -34,7 +24,7 @@ button.invite-btn{background:#27ae60}
   <input id="userIn" placeholder="用户名">
   <input id="passIn" type="password" placeholder="密码">
   <div class="flex">
-    <button onclick="register()">注册账号</button>
+    <button onclick="register()">注册</button>
     <button onclick="login()">登录</button>
   </div>
 </div>
@@ -43,10 +33,10 @@ button.invite-btn{background:#27ae60}
   <h2>欢迎 <span id="myName"></span></h2>
 
   <div class="panel">
-    <h3>搜索用户加好友</h3>
+    <h3>搜索用户添加好友</h3>
     <div class="flex">
       <input id="searchUser" placeholder="输入用户名">
-      <button onclick="searchUserFunc()">搜索</button>
+      <button onclick="searchUser()">搜索</button>
     </div>
     <div id="searchResult"></div>
   </div>
@@ -62,108 +52,139 @@ button.invite-btn{background:#27ae60}
   </div>
 
   <div class="panel">
-    <h3>私聊</h3>
-    <select id="chatTarget" onchange="loadChat()">
-      <option value="">选择好友聊天</option>
-    </select>
+    <h3>私聊窗口</h3>
+    <div>选择好友：<select id="chatTarget" onchange="loadChat()"></select></div>
     <div id="chatArea"></div>
-    <input id="msgInput" placeholder="输入消息" onkeydown="if(event.key==='Enter')sendMsg()">
+    <input id="msgInput" placeholder="文字消息" onkeydown="if(event.key==='Enter')sendMsg()">
     <div class="flex">
-      <button onclick="sendMsg()">发送</button>
-      <button onclick="document.getElementById('imgUpload').click()">发图片</button>
+      <button onclick="document.getElementById('imgUpload').click()">发送图片</button>
       <input type="file" id="imgUpload" accept="image/*" style="display:none" onchange="sendImage(this)">
-      <button onclick="document.getElementById('fileUpload').click()">发文件</button>
+      <button onclick="document.getElementById('fileUpload').click()">发送文件</button>
       <input type="file" id="fileUpload" style="display:none" onchange="sendFile(this)">
       <button class="invite-btn" onclick="sendGameInvite()">邀请玩沙盒联机</button>
     </div>
   </div>
 </div>
 
-<!-- 内嵌沙盒游戏 -->
-<div id="sandboxWrap">
-  <div id="sandboxMenu">
-    <h1>像素方块沙盒</h1>
-    <div>WASD移动｜空格跳跃｜左键挖方块｜右键放置</div>
-    <div class="flex">
-      <input id="roomInput" placeholder="房间号">
-    </div>
-    <div class="flex">
-      <input id="playerNameInput" placeholder="你的昵称" value="玩家">
-    </div>
-    <div class="flex">
-      <button class="secondary" onclick="startOnline()">联机进入</button>
-      <button onclick="startSingle()">单机游玩</button>
-      <button onclick="closeSandbox()">关闭游戏</button>
-    </div>
-  </div>
-
-  <div id="sandboxHud">
-    <div class="flex">
-      <button id="fullscreenBtn">全屏切换</button>
-      <span id="roomInfo"></span>
-    </div>
-    <div id="playerList"></div>
-  </div>
-
-  <div id="sandboxChatBox">
-    <div id="sandboxChatLog"></div>
-    <input id="sandboxChatInput" placeholder="回车发消息" onkeydown="if(event.key==='Enter')sendSandboxChat()">
-  </div>
-  <canvas id="sandboxCanvas"></canvas>
-</div>
-
 <script>
 let currentUser = "";
 let chatWith = "";
-const apiPrefix = "";
+const api = "";
 
-// ========== 登录注册函数【修复好的】 ==========
 async function register(){
-  const username = document.getElementById("userIn").value.trim();
-  const password = document.getElementById("passIn").value.trim();
-  const res = await fetch(apiPrefix+"/api/register",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({username,password})
-  })
-  const data = await res.json();
-  alert(data.msg);
+  const u = document.getElementById("userIn").value.trim();
+  const p = document.getElementById("passIn").value.trim();
+  const res = await fetch(api+"/api/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:u,password:p})})
+  const d = await res.json();
+  alert(d.msg || (d.ok?"注册成功":"注册失败"));
 }
-
 async function login(){
-  const username = document.getElementById("userIn").value.trim();
-  const password = document.getElementById("passIn").value.trim();
-  const res = await fetch(apiPrefix+"/api/login",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({username,password})
-  })
-  const data = await res.json();
-  if(data.ok){
-    currentUser = username;
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("mainPage").style.display = "block";
+  const u = document.getElementById("userIn").value.trim();
+  const p = document.getElementById("passIn").value.trim();
+  const res = await fetch(api+"/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:u,password:p})})
+  const d = await res.json();
+  if(d.ok){
+    currentUser = u;
+    document.getElementById("loginBox").style.display="none";
+    document.getElementById("mainPage").style.display="block";
     document.getElementById("myName").innerText = currentUser;
-  }else{
-    alert(data.msg);
-  }
+    refreshFriend();
+    refreshApply();
+  }else alert(d.msg);
 }
+async function searchUser(){
+  const q = document.getElementById("searchUser").value.trim();
+  const res = await fetch(api+`/api/searchUser?q=${encodeURIComponent(q)}`);
+  const d = await res.json();
+  let html = "";
+  d.list.forEach(name=>{
+    html += `<div>${name} <button onclick="applyFriend('${name}')">发送好友申请</button></div>`
+  })
+  document.getElementById("searchResult").innerHTML = html;
+}
+async function applyFriend(target){
+  const res = await fetch(api+"/api/sendApply",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({from:currentUser,to:target})})
+  const d = await res.json();
+  alert(d.ok?"申请已发送":d.msg);
+}
+async function refreshApply(){
+  const res = await fetch(api+`/api/getApply?user=${currentUser}`);
+  const d = await res.json();
+  let html = "";
+  d.list.forEach(name=>{
+    html += `<div>${name} <button onclick="handleApply('${name}',true)">同意</button><button onclick="handleApply('${name}',false)">拒绝</button></div>`
+  })
+  document.getElementById("applyList").innerHTML = html;
+}
+async function handleApply(other, accept){
+  await fetch(api+"/api/handleApply",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({me:currentUser,other,accept})})
+  refreshApply();refreshFriend();
+}
+async function refreshFriend(){
+  const res = await fetch(api+`/api/getFriends?user=${currentUser}`);
+  const d = await res.json();
+  let html = "";
+  let optHtml = "<option value=''>请选择</option>";
+  d.list.forEach(name=>{
+    html += `<div>${name}</div>`;
+    optHtml += `<option value="${name}">${name}</option>`
+  })
+  document.getElementById("friendList").innerHTML = html;
+  document.getElementById("chatTarget").innerHTML = optHtml;
+}
+document.getElementById("chatTarget").onchange = function(){chatWith=this.value;loadChat()}
 
-// 下面是社区聊天、沙盒游戏代码（不变）
-function searchUserFunc(){}
-function loadChat(){}
-function sendMsg(){}
-function sendImage(){}
-function sendFile(){}
-function sendGameInvite(){
-  document.getElementById("sandboxWrap").style.display="block";
+async function loadChat(){
+  if(!chatWith) return;
+  const res = await fetch(api+`/api/getPrivateMsg?u1=${currentUser}&u2=${chatWith}`);
+  const d = await res.json();
+  let html = "";
+  d.list.forEach(m=>{
+    if(m.msgType==="text") html += `<div class="msg-item">${m.from}: ${m.content}</div>`
+    if(m.msgType==="image") html += `<div class="msg-item">${m.from}:<br><img src="${m.content}" style="max-width:200px"></div>`
+    if(m.msgType==="file") html += `<div class="msg-item">${m.from}: <a href="${m.content}" download>文件</a></div>`
+    if(m.msgType==="gameInvite") html += `<div class="msg-item" style="background:#275038;padding:6px">🎮 联机邀请！${m.from}邀请你玩沙盒 <button onclick="joinGame('${m.content}')">加入房间</button></div>`
+  })
+  document.getElementById("chatArea").innerHTML = html;
+  document.getElementById("chatArea").scrollTop = document.getElementById("chatArea").scrollHeight;
 }
-function closeSandbox(){
-  document.getElementById("sandboxWrap").style.display="none";
+async function sendMsg(){
+  const text = document.getElementById("msgInput").value.trim();
+  if(!text || !chatWith) return;
+  await fetch(api+"/api/sendPrivateMsg",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({from:currentUser,to:chatWith,msgType:"text",content:text})})
+  document.getElementById("msgInput").value="";
+  loadChat();
 }
-function startSingle(){}
-function startOnline(){}
-function sendSandboxChat(){}
+async function sendImage(input){
+  const file = input.files[0];
+  if(!file||!chatWith)return;
+  const reader = new FileReader();
+  reader.onload = async function(){
+    await fetch(api+"/api/sendPrivateMsg",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({from:currentUser,to:chatWith,msgType:"image",content:reader.result})})
+    loadChat();
+  }
+  reader.readAsDataURL(file);
+}
+async function sendFile(input){
+  const file = input.files[0];
+  if(!file||!chatWith)return;
+  const reader = new FileReader();
+  reader.onload = async function(){
+    await fetch(api+"/api/sendPrivateMsg",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({from:currentUser,to:chatWith,msgType:"file",content:reader.result})})
+    loadChat();
+  }
+  reader.readAsDataURL(file);
+}
+async function sendGameInvite(){
+  if(!chatWith) return alert("请先选择好友");
+  const roomId = Math.random().toString(36).slice(2,8);
+  await fetch(api+"/api/sendPrivateMsg",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({from:currentUser,to:chatWith,msgType:"gameInvite",content:roomId})})
+  alert(`已发送联机邀请，房间号：${roomId}`);
+  loadChat();
+}
+function joinGame(room){
+  window.open(`sandbox.html?room=${room}`,"_blank")
+}
 </script>
 </body>
 </html>
