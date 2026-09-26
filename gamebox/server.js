@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -15,11 +16,18 @@ const friendRequests = []; // 好友请求 {id, from, to, time, status}
 const userFriends = {}; // 用户好友列表 {user: [friend1, friend2...]}
 const chatMessages = {}; // 聊天记录 {user1_user2: [msg1, msg2...]}
 
+// ========== 违禁词配置 ==========
+const forbiddenWords = ['咸鱼蛋', '汉堡', '李梓墨', '大傻子'];
+function hasForbidden(text) {
+    return forbiddenWords.some(word => text.includes(word));
+}
+
 // ========== 登录注册 ==========
 app.post('/api/login', async (req,res)=>{
     const {username,password,action} = req.body
     if(action === "register"){
         if(users[username]) return res.json({success:false,msg:"用户名已存在！"})
+        if(hasForbidden(username)) return res.json({success:false,msg:"用户名包含违禁词，请更换"})
         users[username] = {pwd:password}
         userSet.add(username)
         userFriends[username] = []
@@ -128,22 +136,27 @@ app.get('/api/chat/history', (req, res) => {
 })
 
 // ========== 帖子系统 ==========
+// 发布帖子
 app.post('/api/post',(req,res)=>{
     const {user,content} = req.body
+    if(hasForbidden(content)) return res.json({success:false,msg:"帖子内容包含违禁词，请修改后发布"})
     posts.unshift({
         user,
         content,
         time:new Date().toLocaleString(),
         likeCount: 0,
-        likedUsers: []
+        likedUsers: [],
+        comments: [] // 回复列表
     })
     res.json({success:true})
 })
 
+// 获取全部帖子
 app.get('/api/posts',(req,res)=>{
     res.json(posts)
 })
 
+// 点赞
 app.post('/api/like',(req,res)=>{
     const {postId, username} = req.body
     const post = posts[postId]
@@ -156,13 +169,40 @@ app.post('/api/like',(req,res)=>{
     res.json({success:true, likeCount: post.likeCount, liked: true})
 })
 
+// 删除帖子
+app.delete('/api/post/:id', (req, res) => {
+    const idx = Number(req.params.id);
+    const { username } = req.body;
+    if (idx < 0 || idx >= posts.length) {
+        return res.json({ success: false, msg: "帖子不存在" });
+    }
+    if (posts[idx].user !== username) {
+        return res.json({ success: false, msg: "只能删除自己的帖子" });
+    }
+    posts.splice(idx, 1);
+    res.json({ success: true });
+})
+
+// 回复帖子
+app.post('/api/reply', (req, res) => {
+    const { postId, username, content } = req.body;
+    const post = posts[postId];
+    if(!post) return res.json({success:false, msg:"帖子不存在"});
+    if(hasForbidden(content)) return res.json({success:false, msg:"回复内容包含违禁词，请修改"});
+    
+    post.comments.push({
+        user: username,
+        content,
+        time: new Date().toLocaleString()
+    });
+    res.json({success:true});
+})
+
 // ========== 游戏系统 ==========
 app.post('/api/uploadgame',(req,res)=>{
     const {user,name,code} = req.body
     games.push({
-        user,
-        name,
-        code,
+        user, name, code,
         time:new Date().toLocaleString(),
         playCount: 0
     })
