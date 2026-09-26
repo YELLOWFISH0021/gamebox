@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>游戏社区盒子</title>
+<title>游戏社区盒子 | 科技版</title>
 <style>
 * {
     margin: 0;
@@ -12,24 +12,38 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
+:root {
+    --bg-main: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #152033;
+    --border-color: #1e293b;
+    --primary: #0ea5e9;
+    --primary-glow: rgba(14, 165, 233, 0.4);
+    --text-main: #e2e8f0;
+    --text-sub: #94a3b8;
+    --success: #10b981;
+}
+
 body {
-    background: #f5f7fa;
-    color: #1d2129;
-    line-height: 1.5;
+    background: linear-gradient(135deg, #0a0e17 0%, #0f172a 100%);
+    color: var(--text-main);
+    min-height: 100vh;
+    line-height: 1.6;
 }
 
 /* 顶部导航栏 */
 .navbar {
-    height: 56px;
-    background: #fff;
-    border-bottom: 1px solid #e5e6eb;
+    height: 60px;
+    background: rgba(17, 24, 39, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 .nav-inner {
-    max-width: 1280px;
+    max-width: 1400px;
     height: 100%;
     margin: 0 auto;
     padding: 0 24px;
@@ -40,156 +54,332 @@ body {
 .nav-logo {
     font-size: 18px;
     font-weight: 700;
-    color: #165dff;
-    letter-spacing: 0.5px;
+    background: linear-gradient(90deg, #0ea5e9, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
 }
 .nav-user {
     display: flex;
     align-items: center;
     gap: 12px;
     font-size: 14px;
-    color: #4e5969;
 }
-.nav-user span {
-    font-weight: 500;
-    color: #1d2129;
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #fff;
+    box-shadow: 0 0 12px var(--primary-glow);
+}
+.logout-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-sub);
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.logout-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
 /* 主体布局 */
 .container {
-    max-width: 1280px;
-    margin: 20px auto;
+    max-width: 1400px;
+    margin: 24px auto;
     padding: 0 24px;
     display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: 20px;
+    grid-template-columns: 240px 1fr;
+    gap: 24px;
     align-items: start;
 }
 
 /* 左侧侧边栏 */
 .sidebar {
-    background: #fff;
-    border-radius: 10px;
-    border: 1px solid #e5e6eb;
-    padding: 12px 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px 0;
     position: sticky;
-    top: 76px;
+    top: 84px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 .menu-item {
-    padding: 10px 20px;
+    padding: 12px 24px;
     font-size: 14px;
-    color: #4e5969;
+    color: var(--text-sub);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.25s;
     border-left: 3px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 .menu-item:hover {
-    background: #f2f3f5;
-    color: #165dff;
+    background: rgba(14, 165, 233, 0.08);
+    color: var(--primary);
 }
 .menu-item.active {
-    background: #e8f3ff;
-    color: #165dff;
-    border-left-color: #165dff;
+    background: rgba(14, 165, 233, 0.12);
+    color: var(--primary);
+    border-left-color: var(--primary);
     font-weight: 500;
+    box-shadow: inset 0 0 20px rgba(14, 165, 233, 0.05);
 }
 
 /* 右侧主内容 */
 .main {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
+}
+.panel {
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+}
+.panel.active {
+    display: flex;
 }
 
 /* 通用卡片 */
 .card {
-    background: #fff;
-    border: 1px solid #e5e6eb;
-    border-radius: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
     padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s;
+}
+.card:hover {
+    border-color: rgba(14, 165, 233, 0.4);
+    box-shadow: 0 6px 24px rgba(14, 165, 233, 0.1);
 }
 .card-title {
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 16px;
-    color: #1d2129;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 8px;
+    color: var(--text-main);
+}
+.card-title::before {
+    content: "";
+    width: 3px;
+    height: 16px;
+    background: linear-gradient(180deg, #0ea5e9, #8b5cf6);
+    border-radius: 2px;
 }
 
 /* 输入框和按钮 */
 input, textarea {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #c9cdd4;
-    border-radius: 6px;
+    padding: 10px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
     font-size: 14px;
     outline: none;
-    transition: border-color 0.2s;
+    background: #0f172a;
+    color: var(--text-main);
+    transition: all 0.2s;
     margin-bottom: 12px;
-    background: #fff;
 }
 input:focus, textarea:focus {
-    border-color: #165dff;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
 }
 textarea {
     resize: vertical;
-    min-height: 80px;
+    min-height: 90px;
 }
 .btn {
-    padding: 8px 18px;
+    padding: 9px 20px;
     border: none;
-    border-radius: 6px;
-    background: #165dff;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #0ea5e9, #2563eb);
     color: #fff;
     font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.25s;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
 }
 .btn:hover {
-    background: #0e42d2;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(14, 165, 233, 0.35);
 }
-.btn-secondary {
-    background: #f2f3f5;
-    color: #4e5969;
-}
-.btn-secondary:hover {
-    background: #e5e6eb;
+.btn:active {
+    transform: translateY(0);
 }
 
-/* 列表项 */
-.list-item {
-    padding: 12px;
-    border: 1px solid #e5e6eb;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    cursor: pointer;
+/* 帖子列表 */
+.post-item {
+    padding: 16px;
+    background: #0f172a;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    margin-bottom: 12px;
     transition: all 0.2s;
 }
-.list-item:hover {
-    border-color: #165dff;
-    box-shadow: 0 2px 8px rgba(22, 93, 255, 0.08);
+.post-item:hover {
+    border-color: rgba(14, 165, 233, 0.3);
 }
-.item-title {
-    font-weight: 500;
-    margin-bottom: 4px;
+.post-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
 }
-.item-meta {
+.post-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+}
+.post-meta {
     font-size: 12px;
-    color: #86909c;
+    color: var(--text-sub);
 }
-
-/* 发布区双栏 */
-.publish-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+.post-content {
+    font-size: 14px;
+    color: var(--text-main);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.post-footer {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text-sub);
+    display: flex;
     gap: 16px;
 }
+
+/* 游戏网格 */
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+.game-card {
+    background: #0f172a;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.game-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    box-shadow: 0 8px 24px rgba(14, 165, 233, 0.2);
+}
+.game-cover {
+    height: 110px;
+    background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+}
+.game-info {
+    padding: 12px;
+}
+.game-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.game-author {
+    font-size: 12px;
+    color: var(--text-sub);
+}
+
+/* 搜索框 */
+.search-box {
+    position: relative;
+    margin-bottom: 16px;
+}
+.search-box input {
+    margin-bottom: 0;
+    padding-left: 38px;
+}
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-sub);
+    font-size: 16px;
+}
+
+/* 空状态 */
+.empty {
+    padding: 40px;
+    text-align: center;
+    color: var(--text-sub);
+    font-size: 14px;
+    border: 1px dashed var(--border-color);
+    border-radius: 10px;
+    background: rgba(15, 23, 42, 0.5);
+}
+
+/* 提示条 */
+.tip-bar {
+    padding: 10px 14px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--success);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 响应式 */
 @media (max-width: 900px) {
-    .publish-grid { grid-template-columns: 1fr; }
-    .container { grid-template-columns: 1fr; }
-    .sidebar { position: static; }
+    .container {
+        grid-template-columns: 1fr;
+    }
+    .sidebar {
+        position: static;
+        display: flex;
+        overflow-x: auto;
+        padding: 8px;
+    }
+    .menu-item {
+        flex-shrink: 0;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        padding: 10px 16px;
+    }
+    .menu-item.active {
+        border-left: none;
+        border-bottom-color: var(--primary);
+    }
+    .game-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
 }
 </style>
 </head>
@@ -198,10 +388,11 @@ textarea {
 <!-- 顶部导航 -->
 <div class="navbar">
     <div class="nav-inner">
-        <div class="nav-logo">游戏社区盒子</div>
+        <div class="nav-logo">🎮 游戏社区盒子</div>
         <div class="nav-user">
+            <div class="user-avatar" id="userAvatar">--</div>
             <span id="userName">--</span>
-            <button class="btn btn-secondary" onclick="logout()">退出</button>
+            <button class="logout-btn" onclick="logout()">退出</button>
         </div>
     </div>
 </div>
@@ -210,160 +401,277 @@ textarea {
 <div class="container">
     <!-- 左侧菜单 -->
     <div class="sidebar">
-        <div class="menu-item active" onclick="scrollToArea('postArea')">社区帖子</div>
-        <div class="menu-item" onclick="scrollToArea('gameArea')">游戏广场</div>
-        <div class="menu-item" onclick="scrollToArea('publishArea')">发布内容</div>
+        <div class="menu-item active" onclick="switchPanel('post')">
+            <span>💬</span> 社区帖子
+        </div>
+        <div class="menu-item" onclick="switchPanel('square')">
+            <span>🎯</span> 游戏广场
+        </div>
+        <div class="menu-item" onclick="switchPanel('library')">
+            <span>📚</span> 游戏库
+        </div>
     </div>
 
     <!-- 右侧内容 -->
     <div class="main">
-        <!-- 发布区 -->
-        <div class="card" id="publishArea">
-            <div class="card-title">快速发布</div>
-            <div class="publish-grid">
-                <div>
-                    <div style="font-weight:500;margin-bottom:8px;font-size:14px;">发布帖子</div>
-                    <textarea id="postContent" placeholder="分享你的想法..."></textarea>
+
+        <!-- 1. 社区帖子页面 -->
+        <div class="panel active" id="postPanel">
+            <div class="card">
+                <div class="card-title">发布新帖子</div>
+                <textarea id="postContent" placeholder="分享你的游戏心得、问题讨论或新鲜事..."></textarea>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:12px; color:var(--text-sub);"><span id="charCount">0</span> 字</span>
                     <button class="btn" onclick="sendPost()">发布帖子</button>
                 </div>
-                <div>
-                    <div style="font-weight:500;margin-bottom:8px;font-size:14px;">上传HTML游戏</div>
-                    <input id="gameName" placeholder="游戏名称">
-                    <textarea id="gameCode" rows="3" placeholder="粘贴完整HTML游戏代码"></textarea>
-                    <button class="btn" onclick="uploadGame()">上传游戏</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">全部帖子</div>
+                <div id="postList"></div>
+            </div>
+        </div>
+
+        <!-- 2. 游戏广场页面 -->
+        <div class="panel" id="squarePanel">
+            <div class="card">
+                <div class="card-title">🔥 最新上架</div>
+                <div class="tip-bar">
+                    <span>☁️</span>
+                    所有游戏均已云端同步，全部玩家可见
                 </div>
+                <div id="squareGameList" class="game-grid"></div>
             </div>
         </div>
 
-        <!-- 游戏广场 -->
-        <div class="card" id="gameArea">
-            <div class="card-title">
-                <span>游戏广场</span>
-                <span style="font-size:12px;color:#86909c;font-weight:normal;">点击即可游玩</span>
+        <!-- 3. 游戏库页面 -->
+        <div class="panel" id="libraryPanel">
+            <div class="card">
+                <div class="card-title">📚 全部游戏库</div>
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input id="gameSearch" placeholder="搜索游戏名称或作者..." oninput="searchGames()">
+                </div>
+                <div style="margin-bottom:16px;">
+                    <button class="btn" onclick="showUploadForm()">⬆️ 上传新游戏</button>
+                </div>
+                
+                <!-- 上传表单 -->
+                <div id="uploadForm" style="display:none; margin-bottom:20px; padding:16px; background:#0a0e17; border-radius:8px; border:1px solid var(--border-color);">
+                    <div style="font-weight:500; margin-bottom:10px;">上传HTML游戏</div>
+                    <input id="gameName" placeholder="游戏名称">
+                    <textarea id="gameCode" rows="4" placeholder="粘贴完整HTML游戏代码"></textarea>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:12px; color:var(--text-sub);">上传后自动同步到云端，所有玩家可见</span>
+                        <button class="btn" onclick="uploadGame()">确认上传</button>
+                    </div>
+                </div>
+
+                <div id="libraryGameList" class="game-grid"></div>
             </div>
-            <div id="gameList"></div>
         </div>
 
-        <!-- 社区帖子 -->
-        <div class="card" id="postArea">
-            <div class="card-title">社区帖子</div>
-            <div id="postList"></div>
-        </div>
     </div>
 </div>
 
 <script>
-const username = localStorage.getItem("user")
-if(!username) window.location.href="/index.html"
-document.getElementById("userName").textContent = username
+const username = localStorage.getItem("user");
+if(!username) window.location.href = "/index.html";
 
-function logout(){
-    localStorage.removeItem("user")
-    window.location.href="/index.html"
+// 初始化用户信息
+document.getElementById("userName").textContent = username;
+document.getElementById("userAvatar").textContent = username.charAt(0).toUpperCase();
+
+// 全局游戏数据缓存
+let allGames = [];
+
+// 切换面板
+function switchPanel(name) {
+    // 隐藏所有面板
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    // 取消所有菜单高亮
+    document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+    
+    // 显示对应面板
+    document.getElementById(name + 'Panel').classList.add('active');
+    // 高亮对应菜单
+    event.currentTarget.classList.add('active');
+
+    // 切换时刷新数据
+    if(name === 'post') loadPosts();
+    if(name === 'square' || name === 'library') loadAllGames();
 }
 
-function scrollToArea(id){
-    document.getElementById(id).scrollIntoView({behavior:'smooth'})
-    // 菜单高亮
-    document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'))
-    event.target.classList.add('active')
-}
-
-// 加载游戏列表
-async function loadGames(){
-    try{
-        const res = await fetch("/api/games")
-        const list = await res.json()
-        const div = document.getElementById("gameList")
-        div.innerHTML = ""
-        if(list.length === 0){
-            div.innerHTML = '<div style="color:#86909c;text-align:center;padding:20px;">暂无游戏，快去上传第一个吧</div>'
-            return
-        }
-        list.forEach((g, idx)=>{
-            div.innerHTML += `
-            <div class="list-item" onclick="playGame(${idx})">
-                <div class="item-title">${g.name}</div>
-                <div class="item-meta">作者：${g.user} · ${g.time}</div>
-            </div>`
-        })
-    }catch(e){
-        alert("游戏列表加载失败")
-    }
-}
-
-function playGame(id){
-    window.location.href = `/game.html?id=${id}`
-}
-
-async function uploadGame(){
-    try{
-        const name = document.getElementById("gameName").value
-        const code = document.getElementById("gameCode").value
-        if(!name.trim() || !code.trim()){
-            alert("请填写游戏名称和代码")
-            return
-        }
-        await fetch("/api/uploadgame",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({user:username, name, code})
-        })
-        loadGames()
-        document.getElementById("gameName").value = ""
-        document.getElementById("gameCode").value = ""
-        alert("上传成功！")
-    }catch(e){
-        alert("上传失败："+e)
-    }
-}
+// 帖子字数统计
+document.getElementById("postContent").addEventListener("input", function(){
+    document.getElementById("charCount").textContent = this.value.length;
+});
 
 // 加载帖子
-async function loadPosts(){
-    try{
-        const res = await fetch("/api/posts")
-        const list = await res.json()
-        const div = document.getElementById("postList")
-        div.innerHTML = ""
-        if(list.length === 0){
-            div.innerHTML = '<div style="color:#86909c;text-align:center;padding:20px;">暂无帖子，抢个沙发吧</div>'
-            return
+async function loadPosts() {
+    try {
+        const res = await fetch("/api/posts");
+        const list = await res.json();
+        const div = document.getElementById("postList");
+        
+        if(list.length === 0) {
+            div.innerHTML = '<div class="empty">还没有帖子，快来发布第一条吧～</div>';
+            return;
         }
-        list.forEach(p=>{
-            div.innerHTML += `
-            <div class="list-item" style="cursor:default;">
-                <div class="item-meta" style="margin-bottom:6px;">${p.user} · ${p.time}</div>
-                <div>${p.content}</div>
-            </div>`
-        })
-    }catch(e){
-        alert("帖子加载失败："+e)
+
+        div.innerHTML = "";
+        list.forEach(p => {
+            const item = document.createElement("div");
+            item.className = "post-item";
+            item.innerHTML = `
+                <div class="post-head">
+                    <div class="post-avatar">${(p.user || "?").charAt(0).toUpperCase()}</div>
+                    <div class="post-meta">
+                        <span style="color:var(--text-main); font-weight:500;">${escapeHtml(p.user || "匿名")}</span>
+                        &nbsp;·&nbsp; ${escapeHtml(p.time || "")}
+                    </div>
+                </div>
+                <div class="post-content">${escapeHtml(p.content || "")}</div>
+            `;
+            div.appendChild(item);
+        });
+    } catch(e) {
+        document.getElementById("postList").innerHTML = '<div class="empty">帖子加载失败</div>';
     }
 }
 
-async function sendPost(){
-    try{
-        const content = document.getElementById("postContent").value
-        if(!content.trim()){
-            alert("帖子内容不能为空")
-            return
-        }
-        await fetch("/api/post",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({user:username, content})
-        })
-        loadPosts()
-        document.getElementById("postContent").value = ""
-        alert("发帖成功！")
-    }catch(e){
-        alert("发帖失败："+e)
+// 发帖
+async function sendPost() {
+    const content = document.getElementById("postContent").value;
+    if(!content.trim()) {
+        alert("帖子内容不能为空！");
+        return;
     }
+
+    try {
+        await fetch("/api/post", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({user: username, content})
+        });
+        document.getElementById("postContent").value = "";
+        document.getElementById("charCount").textContent = "0";
+        alert("发布成功！");
+        loadPosts();
+    } catch(e) {
+        alert("发帖失败：" + e.message);
+    }
+}
+
+// 加载全部游戏（云端同步）
+async function loadAllGames() {
+    try {
+        const res = await fetch("/api/games");
+        allGames = await res.json();
+        
+        // 渲染广场（最新6个）
+        renderGameList("squareGameList", allGames.slice(0, 6));
+        // 渲染游戏库（全部）
+        renderGameList("libraryGameList", allGames);
+    } catch(e) {
+        console.error("游戏加载失败", e);
+    }
+}
+
+// 渲染游戏列表
+function renderGameList(elementId, list) {
+    const div = document.getElementById(elementId);
+    if(list.length === 0) {
+        div.innerHTML = '<div class="empty" style="grid-column:1/-1;">暂无游戏，快去上传第一个吧</div>';
+        return;
+    }
+
+    div.innerHTML = "";
+    list.forEach((g, idx) => {
+        const card = document.createElement("div");
+        card.className = "game-card";
+        card.onclick = () => playGame(idx);
+        card.innerHTML = `
+            <div class="game-cover">🎮</div>
+            <div class="game-info">
+                <div class="game-name">${escapeHtml(g.name || "未命名游戏")}</div>
+                <div class="game-author">作者：${escapeHtml(g.user || "匿名")}</div>
+            </div>
+        `;
+        div.appendChild(card);
+    });
+}
+
+// 搜索游戏
+function searchGames() {
+    const keyword = document.getElementById("gameSearch").value.toLowerCase().trim();
+    if(!keyword) {
+        renderGameList("libraryGameList", allGames);
+        return;
+    }
+    const filtered = allGames.filter(g => 
+        g.name.toLowerCase().includes(keyword) || 
+        g.user.toLowerCase().includes(keyword)
+    );
+    renderGameList("libraryGameList", filtered);
+}
+
+// 显示上传表单
+function showUploadForm() {
+    const form = document.getElementById("uploadForm");
+    form.style.display = form.style.display === "none" ? "block" : "none";
+}
+
+// 上传游戏（云端保存，所有人可见）
+async function uploadGame() {
+    const name = document.getElementById("gameName").value;
+    const code = document.getElementById("gameCode").value;
+
+    if(!name.trim() || !code.trim()) {
+        alert("请填写游戏名称和完整代码！");
+        return;
+    }
+
+    try {
+        await fetch("/api/uploadgame", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({user: username, name, code})
+        });
+        
+        alert("上传成功！已同步到云端，所有玩家均可看见");
+        document.getElementById("gameName").value = "";
+        document.getElementById("gameCode").value = "";
+        document.getElementById("uploadForm").style.display = "none";
+        loadAllGames();
+    } catch(e) {
+        alert("上传失败：" + e.message);
+    }
+}
+
+// 打开游戏
+function playGame(id) {
+    window.location.href = `/game.html?id=${id}`;
+}
+
+// 退出登录
+function logout() {
+    if(confirm("确定退出登录吗？")) {
+        localStorage.removeItem("user");
+        window.location.href = "/index.html";
+    }
+}
+
+// XSS防护
+function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
 }
 
 // 初始化
-loadGames()
-loadPosts()
+loadPosts();
+loadAllGames();
 </script>
 </body>
 </html>
